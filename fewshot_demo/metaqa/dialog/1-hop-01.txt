@@ -1,0 +1,13 @@
+# tok len: 248
+# ID: how popular of a movie was [Grand Hotel]
+# movie_to_imdbvotes
+# SELECT ?x WHERE { ?e <name> "Grand Hotel" . ?e <has_imdb_votes> ?x . }
+Q: how popular of a movie was Grand Hotel
+Thought: Let's first decouple this problem into: (Grand Hotel, popularity, ?). Next, I need to search for a node meaning "Grand Hotel".
+Action: SearchNodes("Grand Hotel")
+Observation: ['"Grand Hotel" | A movie node', '"The Grand Budapest Hotel" | A movie node', '"Hotel" | A movie node', '"hotel" | A tag', '"Grand Isle" | A movie node', '"Grand Prix" | A movie node', '"Grand Masti" | A movie node', '"The Grand" | A movie node', '"Grand Canyon" | A movie node', '"Grand Piano" | A movie node']
+Thought: "Grand Hotel" is the movie node I am looking for. Next, according to the KG schema, has_imdb_votes is the most relevent one. Now I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e <name> "Grand Hotel" . ?e <has_imdb_votes> ?x . }')
+Observation: ['famous']
+Thought: The observation is the answer I want.
+Action: Done.

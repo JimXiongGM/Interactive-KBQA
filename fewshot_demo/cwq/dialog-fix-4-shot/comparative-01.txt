@@ -1,0 +1,1 @@
+../dialog/comparative-01.txt

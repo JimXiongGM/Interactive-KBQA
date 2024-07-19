@@ -1,0 +1,7 @@
+# ID: train-3430
+Q: Which French region with a population other than 20000 has the most weddings per year?
+A: First, the French region with a population other than 20000 are Corsica, Martinique, Brittany, Normandy... Second, the region with the most weddings per year is Normandy. Finally, the answer is: ['Normandy']
+
+# ID: train-12224
+Q: Of countries with other than 5.0 total rate of fertility, which takes up the least area?
+A: First, the countries with other than 5.0 total rate of fertility are Greenland, Mongolia, Namibia ... Second, the country which takes up the least area is Faroe Islands. Finally, the answer is: ['Faroe Islands']

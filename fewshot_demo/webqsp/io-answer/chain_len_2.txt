@@ -1,0 +1,7 @@
+# ID: WebQTrn-1.P0
+Q: what character did natalie portman play in star wars?
+A: The answer is: ["Padmé Amidala"]
+
+# ID: WebQTrn-2792.P0
+Q: who does the uk trade with?
+A: The answer is: ['Angola', 'United States of America', 'Sierra Leone', 'Canada', 'Anguilla']

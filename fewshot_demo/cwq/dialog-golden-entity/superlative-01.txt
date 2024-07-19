@@ -1,0 +1,24 @@
+# tok len: 1142
+# ID: WebQTrn-2678_93995ecbdd166fc16365a56ed489eec0
+# What zoo that opened earliest is there to see in Dallas, TX?
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Dallas"@en .
+#     ?e0 ns:travel.travel_destination.tourist_attractions ?x .
+#     ?x ns:zoos.zoo.opened ?num .
+# } ORDER BY ?num LIMIT 1
+# ['Dallas Zoo']
+
+Q: What zoo that opened earliest is there to see in Dallas, TX?
+Golden Entity: ['Dallas']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target zoo, locate in, "Dallas"), (target zoo, opened, earliest). Next, I need to search for a predicate meaning "locate in" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Dallas"@en . }', semantic="someplace to see")
+Observation: [("American Airlines Center", travel.tourist_attraction.near_travel_destination, ?e), (?e, travel.travel_destination.tourist_attractions, "American Airlines Center"), (?e, location.location.events, "1996 NCAA Men's Division I Basketball Tournament- Midwest Regional Second Round"), (?e, location.location.area, "999.3"^^xsd:float), ("License to Kill", film.film.featured_film_locations, ?e), (?e, location.location.people_born_here, "Katie Gold"), ("1996 NCAA Men's Division I Basketball Tournament- Midwest Regional Second Round", time.event.locations, ?e), ("Booker Woodfox", people.person.places_lived -> people.place_lived.location, ?e), ("United Methodist Church", organization.organization.place_founded, ?e), ("Dallas International Film Festival", film.film_festival.location, ?e)]
+Thought: "travel.travel_destination.tourist_attractions" is the predicate I want. Next, I need to search for a predicate meaning "zoo" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Dallas"@en . ?e0 ns:travel.travel_destination.tourist_attractions ?e . }', semantic="zoo")
+Observation: [("South Africa", zoos.zoo_exhibit.zoo, ?e), (?e, zoos.zoo.exhibits, "Orinoco Avian Trail"), (?e, zoos.zoo.opened, "1888"^^xsd:gYear), (?e, zoos.zoo.category, "Zoo"), ("Zoo", zoos.zoo_category.zoos, ?e), (?e, zoos.zoo.memberships, "Association of Zoos and Aquariums"), ("Bonnie Pitman", architecture.museum_director.museum, ?e), (?e, architecture.museum.established, "1993-10"^^xsd:gYearMonth), (?e, architecture.museum.type_of_museum, "Art Gallery"), ("Dallas Cowboys", sports.sports_team.arena_stadium, ?e)]
+Thought: "zoos.zoo.opened" is the predicate I want. Now, I have all the information I need. I can construct the SPARQL query. 
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Dallas"@en . ?e0 ns:travel.travel_destination.tourist_attractions ?x . ?e ns:zoos.zoo.opened ?num . } ORDER BY ?num LIMIT 1')
+Observation: ['Nasher Sculpture Center']
+Thought: The observation is the answer I want.
+Action: Done.

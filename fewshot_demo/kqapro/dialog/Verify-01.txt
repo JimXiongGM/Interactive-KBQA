@@ -1,0 +1,20 @@
+# tok len: 602
+# ID: train-46325
+# SPARQL: ASK { ?e <pred:instance_of> ?c . ?c <pred:name> "human" . ?e <name_in_native_language> ?pv1 . ?pv1 <pred:value> "Daniel Day-Lewis" . ?e <number_of_children> ?pv . ?pv <pred:unit> "son" . ?pv <pred:value> ?v . FILTER ( ?v < "2.0"^^xsd:double ) . }
+# "answer": "no",
+# "question": "Does Daniel Day-Lewis have less than 2 sons?",
+# "sparql_complexity": 2,
+# "qtype": "Verify"
+
+Q: Does Daniel Day-Lewis have less than 2 sons?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Daniel Day-Lewis, number of son, ?v), (?v, <, 2). Next, I need to search for a node about "Daniel Day-Lewis".
+Action: SearchNodes("Daniel Day-Lewis")
+Observation: ['Daniel Day-Lewis | entity', 'Daniel Radcliffe | entity', 'Daniel Craig | entity', 'Damian Lewis | entity', 'David Thewlis | entity', 'Daniel Lanois | entity', 'David Strathairn | entity', 'Liam Neeson | entity', 'Jeff Daniels | entity', 'Jeremy Irons | entity']
+Thought: "Daniel Day-Lewis" is the entity I need. Next, I need to search for a predicate meaning "number of son" in the sub-graph of the entity "Daniel Day-Lewis".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Daniel Day-Lewis". }', semantic="number of son")
+Observation: ['?e <number_of_children> ?pv . ?pv <pred:value> "3.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <birth_name> ?pv . ?pv <pred:value> "Daniel Michael Blake Day" .', '?e <place_of_birth> ?t . ?t <pred:name> "London" .', '?e <date_of_birth> ?pv . ?pv <pred:date> "1957-04-29"^^xsd:date .', '?h <producer> ?e . ?e <pred:name> "The Barbarian Invasions" .', '?e <partner> ?t . ?t <pred:name> "Isabelle Adjani" .', '?h <partner> ?e . ?e <pred:name> "Isabelle Adjani" .', '?e <relative> ?t . ?t <pred:name> "Michael Balcon" .', '?h <relative> ?e . ?e <pred:name> "Arthur Miller" .', '?h <winner> ?e . ?e <pred:name> "Academy Award for Best Actor" .']
+Thought: <number_of_children> -> <pred:value> is the predicate pair need. Now, I can answer the question.
+Action: ExecuteSPARQL('ASK { ?e <pred:name> "Daniel Day-Lewis". ?e <number_of_children> ?pv . ?pv <pred:value> ?v . ?pv <pred:unit> "1" . FILTER(?v < 2) }')
+Observation: False
+Thought: The observation is the answer I want.
+Action: Done.

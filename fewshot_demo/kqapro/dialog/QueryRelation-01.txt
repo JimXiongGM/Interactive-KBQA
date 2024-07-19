@@ -1,0 +1,20 @@
+# tok len: 381
+# ID: train-60872
+# SPARQL: SELECT DISTINCT ?p WHERE { ?e1 <pred:name> "Avex Trax" . ?e2 <pred:name> "Minato-ku" . ?e1 ?p ?e2 . }
+# "answer": "headquarters location",
+# "question": "How are Avex Trax and Minato-ku related?",
+# "sparql_complexity": 1,
+# "qtype": "QueryRelation"
+
+Q: How are Avex Trax and Minato-ku related?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Avex Trax, target relation, Minato-ku). Next, I need to search for a node meaning "Avex Trax".
+Action: SearchNodes("Avex Trax")
+Observation: ['Avex Trax | entity', 'Aphex Twin | entity', 'Asylum Records | entity', 'Arista Records | entity', 'Maverick Records | entity', 'Verve Records | entity', 'Matador Records | entity', 'Concord Records | entity', 'Vertigo Records | entity', 'Elektra Records | entity']
+Thought: "Avex Trax" is the entity I need. Next, I need to search for a node meaning "Minato-ku".
+Action: SearchNodes("Minato-ku")
+Observation: ['Minato-ku | entity', 'Chiyoda-ku | entity', 'Kagoshima | entity', 'Nagano Prefecture | entity', 'Minami Takayama | entity', 'Kaneto Shiozawa | entity', 'Kyoto | entity', 'Kagoshima Prefecture | entity', 'Tokyo | entity', 'Fukuoka | entity']
+Thought: "Minato-ku" is the entity I need. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?r WHERE { ?e1 <pred:name> "Avex Trax" . ?e2 <pred:name> "Minato-ku" . { ?e1 ?r ?e2 . } UNION { ?e2 ?r ?e1 . } }')
+Observation: ['headquarters_location']
+Thought: The observation is the answer I want.
+Action: Done.

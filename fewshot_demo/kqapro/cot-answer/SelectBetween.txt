@@ -1,0 +1,7 @@
+# ID: train-1249
+Q: Which place has a lower PPP GDP per capita, Morocco with a fertility rate of 2.611, or Liberia?
+A: First, Morocco has a PPP GDP per capita of 7491. Second, Liberia has a PPP GDP per capita of 842.0. Finally, the place has a lower PPP GDP per capita is Liberia. The answer is: ['Liberia']
+
+# ID: train-85340
+Q: Which is shorter in duration, The Help which has an exploitation visa number of 131176, or Kuch Kuch Hota Hai?
+A: First, The Help has a duration of 146.0. Second, Kuch Kuch Hota Hai has a duration of 178.0. Finally, the movie is shorter in duration is The Help. The answer is: ['The Help']

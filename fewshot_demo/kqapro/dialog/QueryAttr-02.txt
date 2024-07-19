@@ -1,0 +1,29 @@
+# tok len: 1167
+# ID: train-51356
+# SPARQL: SELECT DISTINCT ?pv WHERE { ?e <pred:name> "Skyfall" . ?e <nominated_for> ?t . ?t <pred:name> "Grammy Award for Best Song Written for Visual Media" . ?e <title> ?pv . }
+# "answer": "Skyfall",
+# "question": "What is the title of Skyfall that was nominated for a Grammy Award for Best Song Written for Visual Media?",
+# "sparql_complexity": 1,
+# "qtype": "QueryAttr"
+
+Q: What is the title of Skyfall that was nominated for a Grammy Award for Best Song Written for Visual Media?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Skyfall, title, target value), (Skyfall, nominated for, Grammy Award for Best Song Written for Visual Media). Next, I need to search for a node about "Skyfall".
+Action: SearchNodes("Skyfall")
+Observation: ['Skyfall | entity', 'James Bond | entity', 'Goldfinger | entity', 'Quantum of Solace | entity', 'Moonraker | entity', 'Casino Royale | entity', 'The Spy Who Loved Me | entity', 'Dr. No | entity', 'Daniel Craig | entity', 'GoldenEye | entity']
+Thought: "Skyfall" is the entity I need. Next, I need to search a predicate meaning "nominated for" in the sub-graph of the entity "Skyfall".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Skyfall" . }', semantic="nominated for/award for")
+Observation: ['?e <nominated_for> ?t . ?t <pred:name> "MTV Movie Award for Best Villain" .', '?e <award_received> ?t . ?t <pred:name> "Academy Award for Best Original Song" .', '?e <based_on> ?t . ?t <pred:name> "James Bond" .', '?e <screenwriter> ?t . ?t <pred:name> "John Logan" .', '?e <director_of_photography> ?t . ?t <pred:name> "Roger Deakins" .', '?e <cast_member> ?t . ?t <pred:name> "Javier Bardem" .', '?e <lyrics_by> ?t . ?t <pred:name> "Adele" .', '?e <director> ?t . ?t <pred:name> "Sam Mendes" .', '?e <performer> ?t . ?t <pred:name> "Adele" .', '?h <present_in_work> ?e . ?e <pred:name> "James Bond" .']
+Thought: <nominated_for> is the predicate I need. Next, I need to search for a node about "Grammy Award for Best Song Written for Visual Media".
+Action: SearchNodes("Grammy Award for Best Song Written for Visual Media")
+Observation: ['Grammy Award for Best Song Written for Visual Media | entity', 'Grammy Award for Best Score Soundtrack for Visual Media | entity', 'Grammy Award for Best Compilation Soundtrack for Visual Media | entity', 'Grammy Award for Best Music Video | entity', 'Grammy Award for Best Music Film | entity', 'Grammy Award for Song of the Year | entity', 'Grammy Award for Best Rock Song | entity', 'Broadcast Film Critics Association Award for Best Song | entity', 'Grammy Award for Best Rap Song | entity', 'MTV Video Music Award for Best Video from a Film | entity']
+Thought: "Grammy Award for Best Song Written for Visual Media" is the entity I need. Next, I need to check whether the entity "Grammy Award for Best Song Written for Visual Media" is the tail value of the predicate <nominated_for>.
+Action: ExecuteSPARQL('ASK { ?e <pred:name> "Skyfall" . ?e <nominated_for> ?t . ?t <pred:name> "Grammy Award for Best Song Written for Visual Media" . }')
+Observation: True
+Thought: Yes, it is. Next, I need to search for a predicate meaning "title" in the sub-graph of the entity "Skyfall".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Skyfall" . }', semantic="title")
+Observation: ['?e <title> ?pv . ?pv <pred:value> "Skyfall" .', '?e <genre> ?t . ?t <pred:name> "action film" .', '?e <main_subject> ?t . ?t <pred:name> "terrorism" .', '?e <director> ?t . ?t <pred:name> "Sam Mendes" .', '?e <duration> ?pv . ?pv <pred:value> "143.0"^^xsd:double . ?pv <pred:unit> "minute" .', '?e <producer> ?t . ?t <pred:name> "Michael G. Wilson" .', '?e <collection> ?t . ?t <pred:name> "Museum of Modern Art" .', '?e <composer> ?t . ?t <pred:name> "Adele" .', '?e <theme_music> ?t . ?t <pred:name> "Skyfall" .', '?h <theme_music> ?e . ?e <pred:name> "Skyfall" .']
+Thought: <title> is the predicate I need. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?pv WHERE { ?e <pred:name> "Skyfall" . ?e <nominated_for> ?t . ?t <pred:name> "Grammy Award for Best Song Written for Visual Media" . ?e <title> ?pv . }')
+Observation: ['Skyfall']
+Thought: The observation is the answer I want.
+Action: Done.

@@ -1,0 +1,23 @@
+# tok len: 1082
+# ID: train-3430
+# SPARQL: SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "region of France" . ?e <population> ?pv1 . ?pv1 <pred:unit> "1" . ?pv1 <pred:value> ?v1 . FILTER ( ?v1 != "20000"^^xsd:double ) . ?e <annual_number_of_weddings> ?pv . ?pv <pred:value> ?v . } ORDER BY DESC(?v) LIMIT 1
+# "answer": "Normandy",
+# "question": "Which French region with a population other than 20000 has the most weddings per year?",
+# "sparql_complexity": 3,
+# "qtype": "SelectAmong"
+
+Q: Which French region with a population other than 20000 has the most weddings per year?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target entity, is a, region of France), (target entity, population, ?v), (?v, !=, 20000), (target entity, weddings per year, ?v1), (target entity, order by desc, ?v1). Next, I need to search for a node meaning "region of France".
+Action: SearchNodes("region of France")
+Observation: ['region of France | concept', 'former French region | concept', 'commune of France | concept', 'region of Italy | concept', 'France | entity', 'Languedoc-Roussillon | entity', 'Early modern France | entity', 'Poitou-Charentes | entity', 'Dordogne | entity', 'French | entity']
+Thought: "region of France" is the concept I need. Next, I need to search for a predicate meaning "population" in the concept "region of France" sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "region of France". }', semantic="population/number of inhabitants")
+Observation: ['?e <population> ?pv . ?pv <pred:value> "320208.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <area> ?pv . ?pv <pred:value> "8680.0"^^xsd:double . ?pv <pred:unit> "square kilometre" .', '?e <currency> ?t . ?t <pred:name> "euro" .', '?e <country> ?t . ?t <pred:name> "France" .', '?e <capital> ?t . ?t <pred:name> "Rouen" .', '?e <continent> ?t . ?t <pred:name> "North America" .', '?e <perimeter> ?pv . ?pv <pred:value> "1047.0"^^xsd:double . ?pv <pred:unit> "kilometre" .', '?h <capital_of> ?e . ?e <pred:name> "Rouen" .', '?e <part_of> ?t . ?t <pred:name> "France" .', '?h <place_of_death> ?e . ?e <pred:name> "Geoffrey Unsworth" .']
+Thought: <population> is the predicate I need. Next, I need to search for a predicate meaning "weddings per year" in the sub-graph of the concept "region of France".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "region of France". }', semantic="weddings per year")
+Observation: ['?e <annual_number_of_weddings> ?pv . ?pv <pred:value> "1192.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <population> ?pv . ?pv <pred:value> "320208.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <country> ?t . ?t <pred:name> "France" .', '?e <currency> ?t . ?t <pred:name> "euro" .', '?e <perimeter> ?pv . ?pv <pred:value> "1047.0"^^xsd:double . ?pv <pred:unit> "kilometre" .', '?e <inception> ?pv . ?pv <pred:date> "1972-01-01"^^xsd:date .', '?e <area> ?pv . ?pv <pred:value> "8680.0"^^xsd:double . ?pv <pred:unit> "square kilometre" .', '?e <official_website> ?pv . ?pv <pred:value> "http://www.corse.fr/" .', '?e <capital> ?t . ?t <pred:name> "Rouen" .', '?e <continent> ?t . ?t <pred:name> "North America" .']
+Thought: <annual_number_of_weddings> is the predicate I need. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "region of France" . ?e <population> ?population . ?population <pred:unit> "1" . ?population <pred:value> ?value . FILTER (?value != "20000"^^xsd:double) . ?e <annual_number_of_weddings> ?weddings . ?weddings <pred:value> ?annual_number . } ORDER BY DESC(?annual_number) LIMIT 1')
+Observation: ['Normandy']
+Thought: The observation is the answer I want.
+Action: Done.

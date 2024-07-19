@@ -1,0 +1,32 @@
+# WebQTrn-3.P0
+# "SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Grand Bahama"@en . ?e0 ns:location.location.containedby ?x . ?x ns:base.biblioness.bibs_location.loc_type ?sk0 . FILTER (str(?sk0) = "Country") }",
+Q: what country is the grand bahama island in?
+Golden Entity: ['Grand Bahama', 'Country']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Grand Bahama, located in, target country). Next, I need to search for a predicate meaning "located in" in the sub-graph of the entity "United Kingdom".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Grand Bahama"@en }', semantic="located in/contained by")
+Observation: [(?e, location.location.containedby, "Bahamas"), (?e, location.location.contains, "Grand Bahama International Airport"), (?e, location.location.area, "1373.0"^^xsd:float), (?e, location.location.people_born_here, "Hubert Ingraham"), ("Demetrius Pinder", people.person.places_lived -> people.place_lived.location, ?e), (?e, location.location.nearby_airports, "West End Airport"), (?e, location.location.time_zones, "Eastern Time Zone"), ("Vision Airlines", aviation.airline.focus_cities -> location.location.containedby, ?e), ("Vision Airlines", aviation.airline.hubs -> location.location.containedby, ?e), ("Florida Commuter Airlines crash", aviation.airliner_accident.flight_destination -> location.location.containedby, ?e)]
+Thought: "location.location.containedby" is the predicate I want. Next, I need to search for a node meaning "country" in the sub-graph of the entity "Bahamas".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Grand Bahama"@en . ?e0 ns:location.location.containedby ?e .}', semantic="entity type")
+Observation: [("Sebastian Bach", people.person.nationality, ?e), (?e, base.biblioness.bibs_location.loc_type, "Country"), ("Hotel", architecture.building_function.buildings -> location.location.containedby, ?e), ("Planet", astronomy.celestial_object_category.objects -> base.aareas.schema.administrative_area.administrative_children, ?e), ("Heliocentric orbit", astronomy.orbit_type.orbiting_bodies -> base.aareas.schema.administrative_area.administrative_children, ?e), ("Sun", astronomy.orbital_relationship.orbited_by -> base.aareas.schema.administrative_area.administrative_children, ?e), ("Moon", astronomy.orbital_relationship.orbits -> base.aareas.schema.administrative_area.administrative_children, ?e), ("Geographic coordinate system", astronomy.planetographic_coordinate_system.celestial_object -> base.aareas.schema.administrative_area.administrative_children, ?e), ("Sun", astronomy.star.planet_s -> base.aareas.schema.administrative_area.administrative_children, ?e), ("Solar System", astronomy.star_system.planetary_system -> base.aareas.schema.administrative_area.administrative_children, ?e)]
+Thought: "base.biblioness.bibs_location.loc_type" is the predicate I want. Now, I can construct the final query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Grand Bahama"@en . ?e0 ns:location.location.containedby ?x . ?x ns:base.biblioness.bibs_location.loc_type ?sk0 . FILTER (str(?sk0) = "Country") }')
+Observation: ['Bahamas']
+Thought: The observation is the answer I want.
+Action: Done.
+
+# ID: WebQTrn-4.P0
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Bahamas"@en .
+#     ?e0 ns:location.country.currency_used ?x .
+# }
+Q: what kind of money to take to bahamas?
+Golden Entity: ['Bahamas']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Bahamas, use kind of money, target kind of money). Next, I need to search for a predicate meaning "a country uses a kind of money" in the sub-graph of the entity "Bahamas".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Bahamas"@en }', semantic="a country uses a kind of money")
+Observation: [("Bahamian dollar", finance.currency.countries_used, ?e), (?e, location.country.currency_used, "Bahamian dollar"), (?e, location.statistical_region.gni_in_ppp_dollars -> measurement_unit.dated_money_value.currency, "United States Dollar"), (?e, location.statistical_region.gdp_nominal -> measurement_unit.dated_money_value.currency, "United States Dollar"), (?e, location.statistical_region.official_development_assistance -> measurement_unit.dated_money_value.currency, "United States Dollar"), (?e, location.statistical_region.official_development_assistance -> measurement_unit.dated_money_value.amount, "-370000.0"^^xsd:float), ("Parliamentary system", government.form_of_government.countries, ?e), (?e, location.statistical_region.gdp_nominal_per_capita -> measurement_unit.dated_money_value.currency, "United States Dollar"), (?e, location.country.capital, "Nassau"), (?e, location.statistical_region.gdp_nominal -> measurement_unit.dated_money_value.amount, "1.69802e+08"^^xsd:float)]
+Thought: "location.country.currency_used" is the predicate pair I need. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Bahamas"@en . ?e0 ns:location.country.currency_used ?x . }')
+Observation: ['Bahamian dollar']
+Thought: The observation is the answer I want.
+Action: Done.

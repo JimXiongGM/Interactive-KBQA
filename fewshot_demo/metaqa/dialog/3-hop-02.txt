@@ -1,0 +1,9 @@
+Q: what are the languages spoken in the movies directed by the Fail Safe director
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Fail Safe, directed by, the director), (some movies, directed by, the director), (some movies, in language, some language). Next, I need to search for a node meaning "Fail Safe".
+Action: SearchNodes("Fail Safe")
+Observation: ['\"Fail Safe\" | A movie node', '\"Safe\" | A movie node', '\"Safe House\" | A movie node', '\"Safe Haven\" | A movie node', '\"Safe Men\" | A movie node', '\"Safe Conduct\" | A movie node', '\"Safe Sex\" | A movie node', '\"Safe Passage\" | A movie node', '\"Too Big to Fail\" | A movie node', '\"A Safe Place\" | A movie node']
+Thought: "Fail Safe" is the movie I want. Next, according to the KG schema, directed_by means "directed by", and has_language means "in language". Now, I can try to construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?language WHERE { ?e0 <name> "Fail Safe" . ?e0 <directed_by> ?director . ?movie <directed_by> ?director . ?movie <in_language> ?language . FILTER (?movie != ?e0) }')
+Observation: ['Spanish']
+Thought: The observation is the answer I want.
+Action: Done.

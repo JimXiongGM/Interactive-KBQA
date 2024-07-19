@@ -1,0 +1,28 @@
+# tok len: 699
+# ID: train-11276
+# SELECT DISTINCT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "sovereign state" . ?e <diplomatic_relation> ?e1 . ?e1 <pred:name> "Bulgaria" .  [ <pred:fact_h> ?e ; <pred:fact_r> <diplomatic_relation> ; <pred:fact_t> ?e1 ] <statement_is_subject_of> ?qpv . ?qpv <pred:value> "Bulgaria–Slovenia relations" .  }
+# "answer": ['Slovenia']
+# "question": What sovereign state has Bulgaria–Slovenia diplomatic relations with Bulgaria?
+# "qtype": "QueryName"
+
+Q: What sovereign state has Bulgaria–Slovenia diplomatic relations with Bulgaria?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target entity, is a, sovereign state), (target entity, diplomatic relations, Bulgaria), (diplomatic relations, is a kind of, Bulgaria–Slovenia). Next, I need to search a node meaning "sovereign state".
+Action: SearchNodes("sovereign state")
+Observation: ['sovereign state | concept', 'unitary state | concept', 'state of the United States | concept', 'state | concept', 'Commonwealth of Nations | entity', 'island nation | concept', 'republic | concept', 'state of Germany | concept', 'superpower | concept', 'governor | concept']
+Thought: "sovereign state" is the concept I need. Next, I need to search for a predicate meaning "diplomatic relations" between two entities.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "sovereign state". }', semantic="diplomatic relations")
+Observation: ['?e <diplomatic_relation> ?t . ?t <pred:name> "Ghana" .', '?h <diplomatic_relation> ?e . ?h <pred:name> "Ghana" .', '?e <military_conflicts> ?t . ?t <pred:name> "France" .', '?h <military_conflicts> ?e . ?h <pred:name> "France" .', '?e <head_of_state> ?t . ?t <pred:name> "George V" .', '?h <allegiance> ?e . ?h <pred:name> "Christopher Lee" .', '?h <official_residence> ?e . ?h <pred:name> "Josh Hutcherson" .', '?e <political_ideology> ?t . ?t <pred:name> "Nazism" .', '?e <twinned_administrative_body> ?t . ?t <pred:name> "Cheltenham" .', '?h <twinned_administrative_body> ?e . ?h <pred:name> "Cheltenham" .']
+Thought: <diplomatic_relation> is the predicate I need. Now, I need to find the sovereign state that has diplomatic relations with Bulgaria. Let me check if there is a node meaning "Bulgaria".
+Action: SearchNodes("Bulgaria")
+Observation: ['Bulgaria | entity', 'Bulgarian | entity', 'Kingdom of Bulgaria | entity', 'Plovdiv | entity', 'North Macedonia | entity', 'Bulgaria national football team | entity', 'Serbia | entity', 'Albania | entity', 'Slovakia | entity', 'Greece | entity']
+Thought: "Bulgaria" is the entity I need. Next, I need to check if the sub-graph exists.
+Action: ExecuteSPARQL('ASK WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "sovereign state". ?e <diplomatic_relation> ?t . ?t <pred:name> "Bulgaria" . }')
+Observation: True
+Thought: The observation indicates that the sub-graph exists. The question specifically asks for the sovereign state that has Bulgaria–Slovenia diplomatic relations with Bulgaria. Maybe I should try to find the modifier of the predicate <diplomatic_relation>.
+Action: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?qpv)) WHERE { ?e1 <pred:instance_of> ?c . ?c <pred:name> "sovereign state". ?e1 <diplomatic_relation> ?e2 . ?e2 <pred:name> "Bulgaria" . [ <pred:fact_h> ?e1 ; <pred:fact_r> <diplomatic_relation> ; <pred:fact_t> ?e2 ] ?p ?qpv . }')
+Observation: [('statement_is_subject_of', 'Bulgaria–Iraq relations'), ('pred:fact_r', 'diplomatic_relation'), ('diplomatic_mission_sent', 'Australian Consulate in Sofia, Bulgaria'), ('pred:fact_h', 'Iraq'), ('pred:fact_t', 'Bulgaria')]
+Thought: ('statement_is_subject_of', 'Bulgaria–Iraq relations') is the tuple I need. Now, I need to construct a SPARQL query to find the sovereign state that has Bulgaria–Iraq diplomatic relations with Bulgaria.
+Action: ExecuteSPARQL('SELECT DISTINCT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "sovereign state" . ?e <diplomatic_relation> ?e1 . ?e1 <pred:name> "Bulgaria" . [ <pred:fact_h> ?e ; <pred:fact_r> <diplomatic_relation> ; <pred:fact_t> ?e1 ] <statement_is_subject_of> ?qpv . ?qpv <pred:value> "Bulgaria–Slovenia relations" . }')
+Observation: ['Slovenia']
+Thought: The observation indicates that Slovenia is the sovereign state that has diplomatic relations with Bulgaria, specifically within the context of Bulgaria–Slovenia relations. This answers the question posed.
+Action: Done.

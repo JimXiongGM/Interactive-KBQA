@@ -1,0 +1,26 @@
+# tok len: 1747
+# ID: train-86661
+# SPARQL: SELECT DISTINCT ?qpv WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "film" . ?e <exploitation_visa_number> ?pv1 . ?pv1 <pred:value> "130437" . ?e <publication_date> ?pv . ?pv <pred:date> "2011-09-22"^^xsd:date . [ <pred:fact_h> ?e ; <pred:fact_r> <publication_date> ; <pred:fact_t> ?pv ] <place_of_publication> ?qpv . }
+# "answer": "Germany",
+# "question": "Where was a movie, whose exploitation visa number is 130437, published on 22th September 2011?",
+# "sparql_complexity": 2,
+# "qtype": "QueryAttrQualifier"
+
+Q: Where was a movie, whose exploitation visa number is 130437, published on 22th September 2011?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (entity, is a, movie), (entity, exploitation visa number, 130437), (entity, publication date, 2011-09-22), (entity, place of publication, target place). Next, I can locate the entity whose exploitation visa number is 130437.
+Action: SearchGraphPatterns('SELECT ?e WHERE { }', semantic="exploitation visa number")
+Observation: ['<exploitation_visa_number>', '<conscription_number>', '<EU_VAT_number>', '<IRS_Employer_Identification_Number>', '<Education_Institution_Identification_Number>', '<KldB-2010_occupation_code>', '<ZVG_number>', '<phone_number>', '<NOC_Occupation_Code>', '<Australian_Company_Number>']
+Thought: <exploitation_visa_number> is the predicate I need. Next, I need to search for a predicate meaning "publication date" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <exploitation_visa_number> ?pv . ?pv <pred:value> "130437" . }', semantic="publication date")
+Observation: ['?e <publication_date> ?pv . ?pv <pred:date> "2008-01-01"^^xsd:date .', '?e <production_date> ?pv . ?pv <pred:year> 1989 .', '?e <date_depicted> ?pv . ?pv <pred:year> 2379 .', '?e <date_of_first_performance> ?pv . ?pv <pred:year> 1989 .', '?e <public_domain_date> ?pv . ?pv <pred:year> 2107 .', '?e <author> ?t . ?t <pred:name> "William Goldman" .', '?e <birth_name> ?pv . ?pv <pred:value> "Helsing" .', '?e <set_in_period> ?t . ?t <pred:name> "World War I" .', '?e <start_time> ?pv . ?pv <pred:date> "1995-11-27"^^xsd:date .', '?e <film_poster> ?pv . ?pv <pred:value> "Rich Man Poor Man poster.jpg" .']
+Thought: <publication_date> is the predicate I need. Next, I need to search for a predicate meaning "place of publication" in the sub-graph of the concept "film".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <exploitation_visa_number> ?pv . ?pv <pred:value> "130437" . }', semantic="place of publication")
+Observation: ['?e <publication_date> ?pv . ?pv <pred:date> "2008-01-01"^^xsd:date .', '?e <production_date> ?pv . ?pv <pred:year> 1989 .', '?e <number_of_pages> ?pv . ?pv <pred:value> "432.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <author> ?t . ?t <pred:name> "William Goldman" .', '?e <narrative_location> ?t . ?t <pred:name> "Boston" .', '?e <filming_location> ?t . ?t <pred:name> "Boston" .', '?e <part_of_the_series> ?t . ?t <pred:name> "Rocky" .', '?h <part_of_the_series> ?e . ?e <pred:name> "Days of Thunder" .', '?e <cites> ?t . ?t <pred:name> "Hamlet" .', '?e <official_website> ?pv . ?pv <pred:value> "http://www.nasinc.co.jp/jp/vampire-knight/" .']
+Thought: There is no predicate meaning "place of publication", I guess it may be a modifier of the predicate <publication_date>. Next, I need to enumerate all the modifiers of the predicate <publication_date>.
+Action: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?t) AS ?t) WHERE { ?e <exploitation_visa_number> ?pv . ?pv <pred:value> "130437" . ?e <publication_date> ?pv1 . ?pv1 <pred:date> "2011-09-22"^^xsd:date . [ <pred:fact_h> ?e ; <pred:fact_r> <publication_date> ; <pred:fact_t> ?pv1 ] ?p ?t . }')
+Observation: [('pred:fact_r', 'publication_date'), ('pred:fact_h', 'Attack the Block'), ('pred:fact_t', '"2011-09-22"^^xsd:date'), ('place_of_publication', 'Germany')]
+Thought: <place_of_publication> is the modifier I need. The target I'm looking for is the tail value of <place_of_publication>. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?place WHERE { ?e <exploitation_visa_number> ?number . ?number <pred:value> "130437" . ?e <publication_date> ?date . ?date <pred:date> "2011-09-22"^^xsd:date . [ <pred:fact_h> ?e ; <pred:fact_r> <publication_date> ; <pred:fact_t> ?date ] <place_of_publication> ?place . }')
+Observation: ['Germany']
+Thought: The observation is the answer I want.
+Action: Done.

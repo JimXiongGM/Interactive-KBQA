@@ -1,0 +1,29 @@
+# tok len: 1949
+# ID: train-68156
+# SPARQL: SELECT DISTINCT ?pv WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "human" . ?e <spouse> ?t . ?t <pred:name> "Cameron Diaz" . [ <pred:fact_h> ?t ; <pred:fact_r> <spouse> ; <pred:fact_t> ?e ] <start_time> ?qpv . ?qpv <pred:date> "2015-01-05"^^xsd:date . ?e <ISNI> ?pv . }
+# "answer": "0000 0000 7149 3587",
+# "question": "Which ISNI designates the person who married Cameron Diaz on 2015-01-05?",
+# "sparql_complexity": 2,
+# "qtype": "QueryAttr"
+
+Q: Which ISNI designates the person who married Cameron Diaz on 2015-01-05?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target person, married, "Cameron Diaz"), (marriage date, is, 2015-01-05), (target person, ISNI, target value). Next, I need to search a node meaning "Cameron Diaz".
+Action: SearchNodes("Cameron Diaz")
+Observation: ['Cameron Diaz | entity', 'Cameron Crowe | entity', 'James Cameron | entity', 'Michelle Rodriguez | entity', 'Catherine Zeta-Jones | entity', 'Salma Hayek | entity', 'Rachel McAdams | entity', 'Eva Mendes | entity', 'Rebecca Romijn | entity', 'Tom Cruise | entity']
+Thought: "Cameron Diaz" is the entity I need. Next, I need to search for a predicate meaning "married".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Cameron Diaz". }', semantic="married")
+Observation: ['?e <spouse> ?t . ?t <pred:name> "Benji Madden" .', '?h <spouse> ?e . ?h <pred:name> "Benji Madden" .', '?e <partner> ?t . ?t <pred:name> "Matt Dillon" .', '?h <partner> ?e . ?h <pred:name> "Matt Dillon" .', '?e <occupation> ?t . ?t <pred:name> "voice actor" .', '?h <winner> ?e . ?h <pred:name> "MTV Movie Award for Best Dance Sequence" .', '?h <cast_member> ?e . ?h <pred:name> "Annie" .', '?e <Twitter_username> ?pv . ?pv <pred:value> "camerondiaz" .', '?e <ethnic_group> ?t . ?t <pred:name> "German Americans" .', '?e <place_of_birth> ?t . ?t <pred:name> "San Diego" .']
+Thought: <spouse> is the predicate I need. Next, I need to search for a predicate meaning "marriage date".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 <pred:name> "Cameron Diaz". ?e0 <spouse> ?e . }', semantic="marriage date")
+Observation: ['?e <date_of_birth> ?pv . ?pv <pred:date> "1979-03-11"^^xsd:date .', '?e <spouse> ?t . ?t <pred:name> "Cameron Diaz" .', '?h <spouse> ?e . ?h <pred:name> "Cameron Diaz" .', '?e <occupation> ?t . ?t <pred:name> "guitarist" .', '?e <official_website> ?pv . ?pv <pred:value> "http://www.GoodCharlotte.com" .', '?e <sibling> ?t . ?t <pred:name> "Joel Madden" .', '?h <sibling> ?e . ?h <pred:name> "Joel Madden" .', '?e <Twitter_username> ?pv . ?pv <pred:value> "benjaminmadden" .', '?e <genre> ?t . ?t <pred:name> "punk rock" .', '?e <country_of_citizenship> ?t . ?t <pred:name> "United States of America" .']
+Thought: There is no predicate meaning "marriage date". It may be a modifier of the predicate <spouse>. Next, I need to enumerate all the modifiers of the predicate <spouse>.
+Action: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?v) AS ?v) WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "human" . ?e <spouse> ?t . ?t <pred:name> "Cameron Diaz" . [ <pred:fact_h> ?e ; <pred:fact_r> <spouse> ; <pred:fact_t> ?t ] ?p ?v } GROUP BY ?p')
+Observation: [('pred:fact_r', 'spouse'), ('pred:fact_h', 'Benji Madden'), ('pred:fact_t', 'Cameron Diaz'), ('start_time', '"2015-01-05"^^xsd:date')]
+Thought: <start_time> is the modifier I need. Next, I need to search for a predicate meaning "ISNI".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 <pred:name> "Cameron Diaz". ?e0 <spouse> ?e . }', semantic="ISNI")
+Observation: ['?e <ISNI> ?pv . ?pv <pred:value> "0000 0000 7149 3587" .', '?e <official_website> ?pv . ?pv <pred:value> "http://www.GoodCharlotte.com" .', '?e <occupation> ?t . ?t <pred:name> "guitarist" .', '?e <instrument> ?t . ?t <pred:name> "guitar" .', '?e <ethnic_group> ?t . ?t <pred:name> "Irish Americans" .', '?e <sibling> ?t . ?t <pred:name> "Joel Madden" .', '?h <sibling> ?e . ?h <pred:name> "Joel Madden" .', '?e <country_of_citizenship> ?t . ?t <pred:name> "United States of America" .', '?e <genre> ?t . ?t <pred:name> "punk rock" .', '?e <date_of_birth> ?pv . ?pv <pred:date> "1979-03-11"^^xsd:date .']
+Thought: <ISNI> is the predicate I need. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?pv WHERE { ?e <pred:name> "Cameron Diaz" . ?e <spouse> ?x . [ <pred:fact_h> ?e ; <pred:fact_r> <spouse> ; <pred:fact_t> ?x ] <start_time> ?qpv . ?qpv <pred:date> "2015-01-05"^^xsd:date . ?x <ISNI> ?pv . }')
+Observation: ['0000 0000 7149 3587']
+Thought: The observation is the answer I want.
+Action: Done.

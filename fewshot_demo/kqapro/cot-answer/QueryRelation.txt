@@ -1,0 +1,7 @@
+# ID: train-60872
+Q: How are Avex Trax and Minato-ku related?
+A: First, Avex Trax is located in Minato-ku. Finally, the relation between Avex Trax and Minato-ku is headquarters location. The answer is: ['headquarters_location in']
+
+# ID: train-4173
+Q: How are A Christmas Carol, which was published on 2000-12-20, and the United Kingdom related?
+A: First, the relation between A Christmas Carol and the United Kingdom is country of origin. The answer is: ['country_of_origin']

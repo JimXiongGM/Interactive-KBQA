@@ -1,0 +1,7 @@
+# ID: train-86661
+Q: Where was a movie, whose exploitation visa number is 130437, published on 22th September 2011?
+A: First, the movie, whose exploitation visa number is 130437, is Attack the Block. Second, Attack the Block is published in Germany. Finally, the answer is: ['Germany']
+
+# ID: train-83622
+Q: When did the city with other than a 17.1 year age of consent have a Human Development Index of 0.91?
+A: First, the cities that have a Human Development Index of 0.91 are Hong Kong, Ireland, Canada... Second, the city with other than a 17.1 year age of consent is Hong Kong. Finally, the happen time of Human Development Index of Hong Kong is 2014. The answer is: ['2014']

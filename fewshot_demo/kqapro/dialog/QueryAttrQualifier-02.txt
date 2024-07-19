@@ -1,0 +1,26 @@
+# tok len: 1769
+# ID: train-83622
+# SPARQL: SELECT DISTINCT ?qpv WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "city" . ?e <age_of_consent> ?pv1 . ?pv1 <pred:unit> "years old" . ?pv1 <pred:value> ?v1 . FILTER ( ?v1 != "17.1"^^xsd:double ) . ?e <Human_Development_Index> ?pv . ?pv <pred:unit> "1" . ?pv <pred:value> "0.91"^^xsd:double . [ <pred:fact_h> ?e ; <pred:fact_r> <Human_Development_Index> ; <pred:fact_t> ?pv ] <point_in_time> ?qpv . }
+# "answer": "2014",
+# "question": "When did the city with other than a 17.1 year age of consent have a Human Development Index of 0.91?",
+# "sparql_complexity": 3,
+# "qtype": "QueryAttrQualifier"
+
+Q: When did the city with other than a 17.1 year age of consent have a Human Development Index of 0.91?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (a city, age of consent, ?v), (?v, is not, 17.1), (a city, Human Development Index, 0.91), (a city, Human Development Index, happen time, target time). Next, I need to search for a node meaning "city" in the KG.
+Action: SearchNodes("city")
+Observation: ['city | concept', 'town | concept', 'city/town | concept', 'big city | concept', 'country | concept', 'metropolis | concept', 'city of New York | concept', 'city with millions of inhabitants | concept', 'Metropolis | entity', 'world | entity']
+Thought: The concept node "city" is what I need. Next, I need to search for a predicate meaning "age of consent" in the sub-graph of the concept "city".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "city" . }', semantic="age of consent/age of majority")
+Observation: ['?e <age_of_consent> ?pv . ?pv <pred:value> "16.0"^^xsd:double . ?pv <pred:unit> "years old" .', '?e <age_of_majority> ?pv . ?pv <pred:value> "18.0"^^xsd:double . ?pv <pred:unit> "years old" .', '?e <marriageable_age> ?pv . ?pv <pred:value> "21.0"^^xsd:double . ?pv <pred:unit> "years old" .', '?e <mean_age> ?pv . ?pv <pred:value> "41.4"^^xsd:double . ?pv <pred:unit> "annum" .', '?e <compulsory_education_(maximum_age)> ?pv . ?pv <pred:value> "17.0"^^xsd:double . ?pv <pred:unit> "years old" .', '?e <compulsory_education_(minimum_age)> ?pv . ?pv <pred:value> "6.0"^^xsd:double . ?pv <pred:unit> "years old" .', '?e <male_population> ?pv . ?pv <pred:value> "3406.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <female_population> ?pv . ?pv <pred:value> "3697.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <life_expectancy> ?pv . ?pv <pred:value> "81.3781"^^xsd:double . ?pv <pred:unit> "year" .', '?e <number_of_out-of-school_children> ?pv . ?pv <pred:value> "35980.0"^^xsd:double . ?pv <pred:unit> "1" .']
+Thought: <age_of_consent> is the predicate I need. Next, I need to search for a predicate meaning "Human Development Index" in the sub-graph of the concept "city".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "city" . }', semantic="Human Development Index")
+Observation: ['?e <Human_Development_Index> ?pv . ?pv <pred:value> "0.759"^^xsd:double . ?pv <pred:unit> "1" .', '?e <life_expectancy> ?pv . ?pv <pred:value> "81.3781"^^xsd:double . ?pv <pred:unit> "year" .', '?e <total_fertility_rate> ?pv . ?pv <pred:value> "1.028"^^xsd:double . ?pv <pred:unit> "1" .', '?e <population> ?pv . ?pv <pred:value> "163000.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <nominal_GDP_per_capita> ?pv . ?pv <pred:value> "42327.8"^^xsd:double . ?pv <pred:unit> "United States dollar" .', '?e <urban_population> ?pv . ?pv <pred:value> "1.63689e+07"^^xsd:double . ?pv <pred:unit> "1" .', '?e <GDP_(PPP)> ?pv . ?pv <pred:value> "4.15866e+11"^^xsd:double . ?pv <pred:unit> "Geary–Khamis dollar" .', '?e <unemployment_rate> ?pv . ?pv <pred:value> "3.4"^^xsd:double . ?pv <pred:unit> "percentage" .', '?e <number_of_households> ?pv . ?pv <pred:value> "481239.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <number_of_out-of-school_children> ?pv . ?pv <pred:value> "35980.0"^^xsd:double . ?pv <pred:unit> "1" .']
+Thought: <Human_Development_Index> is the predicate I need. The question ask for the happen time of the predicate <Human_Development_Index>, so I need to find the modifier of this predicate.
+Action: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?t) AS ?t) WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "city" . ?e <Human_Development_Index> ?pv . ?pv <pred:value> "0.91"^^xsd:double . [ <pred:fact_h> ?e ; <pred:fact_r> <Human_Development_Index> ; <pred:fact_t> ?pv ] ?p ?t . }')
+Observation: [('pred:fact_r', 'Human_Development_Index'), ('point_in_time', '2014'), ('pred:fact_h', 'Hong Kong'), ('pred:fact_t', '"0.91"^^xsd:double')]
+Thought: <point_in_time> is the modifier I need. The target I'm looking for is the tail value of <point_in_time>. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?time WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "city" . ?e <age_of_consent> ?age . ?age <pred:unit> "years old" . ?age <pred:value> ?age_value . FILTER ( ?age_value != "17.1"^^xsd:double ) . ?e <Human_Development_Index> ?index . ?index <pred:unit> "1" . ?index <pred:value> "0.91"^^xsd:double . [ <pred:fact_h> ?e ; <pred:fact_r> <Human_Development_Index> ; <pred:fact_t> ?index ] <point_in_time> ?time . }')
+Observation: ['2014']
+Thought: The observation is the answer I want.
+Action: Done.

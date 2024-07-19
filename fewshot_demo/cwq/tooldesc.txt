@@ -1,0 +1,28 @@
+# v1.0
+When given a question, you need to utilize specific tools to interact with a locally deployed Freebase knowledge graph and compose a SPARQL query to obtain the answer. The following document includes descriptions of the tools and some crucial graph patterns (KG schema).
+
+1. SearchNodes(query)
+Description: Searches for nodes in the knowledge graph based on the surface name.
+Example 1: To find "obama": SearchNodes("obama") will return: ['"Barack Obama" | Description: president of the United States from 2009 to 2017.', ...].
+Example 2: To find a village "Bush": SearchNodes("Bush") will return: ['"Bush" | Description: Bush are a British rock band formed in London in 1992. The band found their immediate success with t...| Description: Bush is a village in Williamson County, Illinois, United States. As of the 2000 census, the village ...|]. It means that there are multiple entities named "Bush" in the KG, you can use both name and description to distinguish them, for example: SELECT ?e WHERE { ?e ns:type.object.name "Bush"@en . ?e ns:common.topic.description ?desc . FILTER(REGEX(?desc, "Bush is a village in Williamson County, Illinois")) }
+
+2. ExecuteSPARQL(sparql)
+Description: Execute a SPARQL query. You can explore the KG freely using this tool.
+Example 1: If you want to check the birthplace of "Barack Obama" is "Honolulu" or not, just: ExecuteSPARQL('ASK { ?e ns:type.object.name "Barack Obama"@en . ?e ns:people.person.place_of_birth ?e1 . ?e1 ns:type.object.name "Honolulu"@en . }').
+
+3. SearchGraphPatterns(sparql, semantic)
+Description: Parameter `sparql` MUST start with ["SELECT ?e WHERE"]. The tool will query the subgraphs with ?e as the head or tail entities, respectively, and return them together. The `semantic` parameter indicates the expected predicate semantics. If provided, the tool will sort the queried subgraphs by semantics. If not, the tool returns the entire subgraph. Note! This tool will return a randomly instantiated triple, you should pay attention to the semantics of the predicate, not the specific names of the head entity or the tail entity. In Freebase, due to the use of "Compound Value Type" (CVT) to represent an event, a one-hop relationship semantically requires two hops in Freebase. For example, the statement "Tom Hanks is an actor in the film Catch Me If You Can" is represented as follows: (?e0 type.object.name "Tom Hanks"@en . ?e0 film.actor.film ?c . ?c film.performance.film ?e1 . ?e1 type.object.name "Catch Me If You Can"@en .) Therefore, if you search "an actor stars in a film", this tool will return "film.actor.film -> film.performance.film" and you should consider it as one-hop relationship. You can write down more than one synonyms to the `semantic` parameter if necessary.
+# 日期
+Example 1: If you want to find out the birthdate of "Barack Obama", you can: SearchGraphPatterns("SELECT ?e WHERE { ?e ns:type.object.name 'Barack Obama'@en . }", semantic="birthdate/natal day"), it will return: ['(?e, people.person.date_of_birth "1961-08-04"^^xsd:date), ...].
+# cvt 找多个信息
+Example 2: If you want to find out the presidents of france, you need to find and confirm the two pieces of information in a cvt subgraph: the official title is "president" and the person is ?x. First, assume that you've found the node "France". Next, you are supposed to do: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "France"@en . }', semantic="president of/governor/Chairman"). It will return: [..., (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.office_holder, "Charles de Gaulle"@en) ...]. Attention! the tail entity "Charles de Gaulle" is instantiated randomly! Next, you are supposed to search: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "France"@en . }', semantic="official title of government"). It will return: [..., (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.basic_title, "President"@en), ...]. Now, you will know "the presidents of france" was expressed by a cvt subgraph and you can write the final SPARQL query: """SELECT DISTINCT ?x WHERE { ?e ns:type.object.name "France"@en . ?e ns:government.governmental_jurisdiction.governing_officials ?c . ?c ns:government.government_position_held.basic_title ?title . ?title ns:type.object.name"President"@en . ?c ns:government.government_position_held.office_holder ?x .}"""
+
+Remember:
+`Action:` must be provided in every round of conversation, and must be one of [SearchNodes, SearchGraphPatterns, ExecuteSPARQL, Done].
+ALWAYS construct the complete SPARQL query as the final answer and use `Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE ...` to execute!
+Do not fabricate predicates! Information must be obtained from observations.
+Follow the demos' format strictly!
+
+Note: The tool will automatically add the prefix required: "PREFIX ns: <http://rdf.freebase.com/ns/>", so you only need to use the abbreviation "ns:" in SPARQL.
+
+Now, Think and solve the following complex questions step by step:

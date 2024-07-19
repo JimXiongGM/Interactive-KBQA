@@ -1,0 +1,7 @@
+# ID: WebQTest-257_cc9c3762c3270d53c3fe668c638ff65b
+Q: Who was the Soviet Leader during WWII that held his governmental position after September 14, 1953?
+A: First, the leader of Soviet Union during WWII is Joseph Stalin. Second, Joseph Stalin held his governmental position until 5 March 1953, so he is not the answer. Third, Leonid Brezhnev held his governmental position from 14 October 1964 to 10 November 1982. The answer is: ['Leonid Brezhnev']
+
+# ID: WebQTrn-1265_82a243ce931f8f01fb19ee11126237b0
+Q: Who won the noble peace prize in 2007 and held his governmental position from 1-3-1977?
+A: First, the person won the noble peace prize in 2007 is Al Gore. Second, Al Gore held his governmental position from 20 January 1993 to 20 January 2001. The answer is: ['Al Gore']

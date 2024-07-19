@@ -1,0 +1,33 @@
+# tok len: 1369
+# ID: WebQTrn-1519_a7e9c06267e287818efb1c2c3a6720fd
+# What pro athlete who started his career latest was a Falcons 2012 quarterback?
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Atlanta Falcons"@en .
+#     ?e0 ns:sports.sports_team.roster ?c .
+#     ?c ns:sports.sports_team_roster.position ?position .
+#     ?position ns:type.object.name "Quarterback"@en .
+#     ?c ns:sports.sports_team_roster.player ?x .
+#     ?c ns:sports.sports_team_roster.from ?sk0 .
+#     FILTER(NOT EXISTS {?c ns:sports.sports_team_roster.from ?sk0} ||
+#     EXISTS {?c ns:sports.sports_team_roster.from ?sk1 .
+#     FILTER(xsd:datetime(?sk1) <= "2012-12-31"^^xsd:dateTime) })
+#     FILTER(NOT EXISTS {?c ns:sports.sports_team_roster.to ?sk2} ||
+#     EXISTS {?c ns:sports.sports_team_roster.to ?sk3 .
+#     FILTER(xsd:datetime(?sk3) >= "2012-01-01"^^xsd:dateTime) })
+# } ORDER BY DESC(?sk0) LIMIT 1
+# ['Luke McCown']
+
+Q: What pro athlete who started his career latest was a Falcons 2012 quarterback?
+Golden Entity: ['Atlanta Falcons', 'Quarterback']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Atlanta Falcons, has a member, target athlete), (target athlete, serving time, 2012), (target athlete, serving position, Quarterback). Next, I need to search for a predicate meaning "has a member" in the sub-graph of Atlanta Falcons.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Atlanta Falcons"@en }', semantic="team member/play in a team/roster in a team")
+Observation: [("Freddie Falcon", sports.mascot.team, ?e), (?e, sports.sports_team.roster -> sports.sports_team_roster.player, "Chase Coffman"), ("Chase Coffman", sports.pro_athlete.teams -> sports.sports_team_roster.team, ?e), (?e, sports.sports_team.sport, "American football"), ("American football", sports.sport.teams, ?e), ("Tight end", sports.sports_position.players -> sports.sports_team_roster.team, ?e), ("Atlanta", sports.sports_team_location.teams, ?e), (?e, sports.sports_team.roster -> sports.sports_team_roster.position, "Tight end"), (?e, sports.sports_team.roster -> sports.sports_team_roster.from, "2012"^^xsd:gYear), ("Georgia Dome", sports.sports_facility.teams, ?e)]
+Thought: "sports.sports_team.roster -> sports.sports_team_roster.player" is the predicate pair meaning "player of a team". Next, I need to search for a predicate meaning "serving position" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Atlanta Falcons"@en . }', semantic="play/serve position")
+Observation: [(?e, sports.sports_team.roster -> sports.sports_team_roster.position, "Outside linebacker"), (?e, user.szaijan.fantasy_football.player.position, "Defensive Unit"), ("Defensive Unit", user.szaijan.fantasy_football.position.player, ?e), (?e, sports.sports_team.location, "Atlanta"), (?e, american_football.football_team.historical_coaching_staff -> american_football.football_historical_coach_position.position, "Head coach"), ("Greg Knapp", american_football.football_coach.coaching_history -> american_football.football_historical_coach_position.team, ?e), ("Mike Smith", american_football.football_coach.current_team_head_coached, ?e), ("Mike Smith", american_football.football_coach.current_team_head_coached -> user.szaijan.fantasy_football.player.nfl_team, ?e), ("Head coach", american_football.football_coach_position.coaches_holding_this_position -> american_football.football_historical_coach_position.team, ?e), ("National Football Conference", american_football.football_conference.divisions -> american_football.football_division.teams, ?e)]
+Thought: "sports.sports_team.roster -> sports.sports_team_roster.position" is the predicate pair meaning "the position of the player". Now, I have all the information I need. According to the Freebase schema, I need to add ".from" and ".to" to the predicate "sports.sports_team_roster" to constrain the year in "2012". Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Atlanta Falcons"@en . ?e0 ns:sports.sports_team.roster ?c . ?c ns:sports.sports_team_roster.position ?position . ?position ns:type.object.name "Quarterback"@en . ?c ns:sports.sports_team_roster.player ?x . ?c ns:sports.sports_team_roster.from ?from . FILTER(xsd:datetime(?from) <= "2012-12-31"^^xsd:dateTime) ?c ns:sports.sports_team_roster.to ?to . FILTER(xsd:datetime(?to) >= "2012-12-31"^^xsd:dateTime) } ORDER BY DESC(?from) LIMIT 1')
+Observation: ['Matt Ryan']
+Thought: The observation is the answer I want.
+Action: Done.

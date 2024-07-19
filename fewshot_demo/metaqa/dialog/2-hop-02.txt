@@ -1,0 +1,9 @@
+Q: what are the genres of the movies acted by Denis Lavant
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (some movies, starred actors, Denis Lavant), (some movies, genres, the target genres). Next, I need to search for a node meaning "Denis Lavant".
+Action: SearchNodes("Denis Lavant")
+Observation: ['"Denis Lavant" | A person node', '"denis lavant" | A tag', '"Claire Denis" | A person node', '"Denis Sanders" | A person node', '"Denis O\\'Hare" | A person node', '"Denis Forman" | A person node', '"Denis Héroux" | A person node', '"Denis Leary" | A person node', '"Denis Villeneuve" | A person node', '"Denis Dercourt" | A person node']
+Thought: "Denis Lavant" is the person node I am looking for. Next, according to the KG schema, starred_actors and has_genre are the relevant predicates. Now I can construct the SPARQL query to find the genres of the movies in which Denis Lavant acted.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?movie <starred_actors> ?actor . ?actor <name> "Denis Lavant" . ?movie <has_genre> ?x . }')
+Observation: ['Comedy', 'Drama', 'Romance']
+Thought: The observation is the answer I want.
+Action: Done.

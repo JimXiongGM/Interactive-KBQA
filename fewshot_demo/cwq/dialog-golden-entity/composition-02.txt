@@ -1,0 +1,25 @@
+# tok len: 954
+# ID: WebQTest-1085_1cffc5c553afc1802970e8a6064cac32
+# Who dated the performer who headlined the concert tour called Demi World Tour?
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Demi World Tour"@en .
+#     ?c ns:music.artist.concert_tours e0 . # 和 music.concert_tour.artist 是等价的，本例用的是后者
+#     ?c ns:base.popstra.celebrity.dated ?y .
+#     ?y ns:base.popstra.dated.participant ?x .
+# }
+# ['Nicholas Braun', 'Joe Jonas', 'Cody Linley']
+
+Q: Who dated the performer who headlined the concert tour called Demi World Tour?
+Golden Entity: ['Demi World Tour']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (a performer, headlined a concert tour, Demi World Tour), (a performer, dated, target people). Next, I need to search for a predicate meaning "a person headlined a concert tour" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Demi World Tour"@en }', semantic="a person headlined/topped the bill/lead act/star performer of a concert tour")
+Observation: [("Demi Lovato", music.artist.concert_tours, ?e), (?e, music.concert_tour.artist, "Demi Lovato"), ("Demi", music.album.supporting_tours, ?e), (?e, music.concert_tour.album_or_release_supporting, "Demi"), ("Wired", base.yupgrade.user.topics -> music.artist.concert_tours, ?e), ("Staying Strong", book.written_work.author -> music.artist.concert_tours, ?e), ("Demi Lovato and Selena Gomez: The Complete Unofficial Story of the BFFs", book.written_work.subjects -> music.artist.concert_tours, ?e), ("Demi Lovato: Her Life, Her Story", film.film.subjects -> music.artist.concert_tours, ?e), ("ddlovato", internet.blog.blogger -> music.artist.concert_tours, ?e), ("Albuquerque", location.location.people_born_here -> music.artist.concert_tours, ?e)]
+Thought: "music.artist.concert_tours" and "music.concert_tour.artist" may be the predicates I want, I should try them one by one. Next, I need to search for a predicate meaning "dated" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Demi World Tour"@en . ?e ns:music.artist.concert_tours ?e0 . }', semantic="dated")
+Observation: [(?e, people.person.date_of_birth, "1992-08-20"^^xsd:date), (?e, base.popstra.celebrity.dated -> base.popstra.dated.participant, "Joe Jonas"), ("2012 Teen Choice Awards", time.event.people_involved, ?e), ("Trans World Airlines Flight 106", aviation.airliner_accident.flight_origin -> location.location.people_born_here, ?e), ("Albuquerque International Sunport", aviation.airport.serves -> location.location.people_born_here, ?e), ("Arthur Rubinstein Award", award.award_category.disciplines_or_subjects -> music.instrument.instrumentalists, ?e), ("Golden Globe Award for Best Actress – Motion Picture – Musical or Comedy", award.award_category.disciplines_or_subjects -> people.profession.people_with_this_profession, ?e), ("MTV Video Music Award for Best Lyric Video", award.award_category.nominees -> award.award_nomination.award_nominee, ?e), ("People's Choice Award for Favorite Female Artist", award.award_category.winners -> award.award_honor.award_winner, ?e), ("2014 Teen Choice Awards", award.award_ceremony.awards_presented -> award.award_honor.award_winner, ?e)]
+Thought: "base.popstra.celebrity.dated -> base.popstra.dated.participant" is the predicates I want. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Demi World Tour"@en . ?e0 ns:music.concert_tour.artist ?e . ?e ns:base.popstra.celebrity.dated ?c . ?c ns:base.popstra.dated.participant ?x . }')
+Observation: ['Nicholas Braun', 'Demi Lovato', 'Cody Linley', 'Joe Jonas']
+Thought: The observation is the answer I want.
+Action: Done.

@@ -1,0 +1,13 @@
+# tok len: 354
+# ID: which movies share the same actor of [The Strangers]	Heavy|Reign Over Me|Underworld|The Incredible Hulk|Onegin|Kitchen Party|The Ledge|My Life Without Me|Cookie's Fortune|The 24th Day|Barefoot|Armageddon|Super
+# movie_to_actor_to_movie
+# SELECT ?x WHERE { ?e <name> "The Strangers" . ?e <starred_actors> ?c . ?x <starred_actors> ?c . FILTER(?x != ?e) . }
+Q: which movies share the same actor of The Strangers
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (some actors, actor of, The Strangers), (some actors, actor of, the target movies). Next, I need to search for a node meaning "The Strangers".
+Action: SearchNodes("The Strangers")
+Observation: ['"The Strangers" | A movie node', '"The Stranger" | A movie node', '"The Strangler" | A movie node', '"Three Strangers" | A movie node', '"Intimate Strangers" | A movie node', '"Between Strangers" | A movie node', '"The Stranger\'s Return" | A movie node', '"The Business of Strangers" | A movie node', '"The Comfort of Strangers" | A movie node', '"The Night Strangler" | A movie node']
+Thought: "The Strangers" is the movie I want. Next, according to the KG schema, starred_actors is the most relevent one. The question asks about "share the same actor", so I need to find the actor of "The Strangers" first, and then find the movies that share the same actor.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?movie <name> "The Strangers" . ?movie <starred_actors> ?actor . ?x <starred_actors> ?actor . FILTER(?x != ?movie) }')
+Observation: ['Armageddon', 'Barefoot', "Cookie's Fortune", 'Heavy', 'Kitchen Party', 'My Life Without Me', 'Onegin', 'Reign Over Me', 'Super', 'The 24th Day', 'The Incredible Hulk', 'The Ledge', 'Underworld']
+Thought: The observation is the answer I want.
+Action: Done.

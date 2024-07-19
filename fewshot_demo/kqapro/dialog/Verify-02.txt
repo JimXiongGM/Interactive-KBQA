@@ -1,0 +1,26 @@
+# tok len: 1396
+# ID: train-44113
+# SPARQL: ASK { ?e <pred:name> "Saint Vincent and the Grenadines" . ?e <inflation_rate> ?pv . ?pv <pred:unit> "percentage" . ?pv <pred:value> ?v . FILTER ( ?v > "7300"^^xsd:double ) . [ <pred:fact_h> ?e ; <pred:fact_r> <inflation_rate> ; <pred:fact_t> ?pv ] <point_in_time> ?qpv . ?qpv <pred:date> "1999-01-01"^^xsd:date . }
+# "answer": "no",
+# "question": "Is the inflation rate of Saint Vincent and the Grenadines greater than 7300 percentage on 1999-01-01?",
+# "sparql_complexity": 2,
+# "qtype": "Verify"
+
+Q: Is the inflation rate of Saint Vincent and the Grenadines greater than 7300 percentage on 1999-01-01?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Saint Vincent and the Grenadines, inflation rate, ?v), (?v, >, 7300), (inflation rate, happen time, 1999-01-01). Next, I need to search for a node about "Saint Vincent and the Grenadines".
+Action: SearchNodes("Saint Vincent and the Grenadines")
+Observation: ['Saint Vincent and the Grenadines | entity', 'Grenada | entity', 'Saint Kitts and Nevis | entity', 'Vanuatu | entity', 'United States Virgin Islands | entity', 'Martinique | entity', 'British Virgin Islands | entity', 'Saint Lucia | entity', 'Dominica | entity', 'Antigua and Barbuda | entity']
+Thought: "Saint Vincent and the Grenadines" is the entity I need. Next, I need to search for a predicate meaning "inflation rate" in the sub-graph of the concept "Saint Vincent and the Grenadines".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Saint Vincent and the Grenadines" . }', semantic="inflation rate/rate of price increase")
+Observation: ['?e <inflation_rate> ?pv . ?pv <pred:value> "1.4"^^xsd:double . ?pv <pred:unit> "percentage" .', '?e <real_gross_domestic_product_growth_rate> ?pv . ?pv <pred:value> "1.8"^^xsd:double . ?pv <pred:unit> "percentage" .', '?e <nominal_GDP_per_capita> ?pv . ?pv <pred:value> "6739.17"^^xsd:double . ?pv <pred:unit> "United States dollar" .', '?e <nominal_GDP> ?pv . ?pv <pred:value> "4.81806e+08"^^xsd:double . ?pv <pred:unit> "United States dollar" .', '?e <population> ?pv . ?pv <pred:value> "105892.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <GDP_(PPP)> ?pv . ?pv <pred:value> "1.21937e+09"^^xsd:double . ?pv <pred:unit> "Geary–Khamis dollar" .', '?e <total_fertility_rate> ?pv . ?pv <pred:value> "2.046"^^xsd:double . ?pv <pred:unit> "1" .', '?e <life_expectancy> ?pv . ?pv <pred:value> "71.683"^^xsd:double . ?pv <pred:unit> "year" .', '?e <area> ?pv . ?pv <pred:value> "389.0"^^xsd:double . ?pv <pred:unit> "square kilometre" .', '?e <number_of_out-of-school_children> ?pv . ?pv <pred:value> "1823.0"^^xsd:double . ?pv <pred:unit> "1" .']
+Thought: <inflation_rate> is the predicate I need. Next, I need to search for a predicate meaning "happen time" in the sub-graph of the entity "Saint Vincent and the Grenadines".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Saint Vincent and the Grenadines" . }', semantic="happen time")
+Observation: ['?e <area> ?pv . ?pv <pred:value> "389.0"^^xsd:double . ?pv <pred:unit> "square kilometre" .', '?e <inception> ?pv . ?pv <pred:year> 1979 .', '?e <population> ?pv . ?pv <pred:value> "105892.0"^^xsd:double . ?pv <pred:unit> "1" .', '?h <has_part> ?e . ?e <pred:name> "Lesser Antilles" .', '?e <language_used> ?t . ?t <pred:name> "English" .', '?e <part_of> ?t . ?t <pred:name> "Lesser Antilles" .', '?e <life_expectancy> ?pv . ?pv <pred:value> "71.683"^^xsd:double . ?pv <pred:unit> "year" .', '?e <continent> ?t . ?t <pred:name> "South America" .', '?e <motto_text> ?pv . ?pv <pred:value> "Мир и правосъдие" .', '?e <member_of> ?t . ?t <pred:name> "United Nations" .']
+Thought: There is no pattern about "happen time" in the sub-graph. Maybe "happen time" modifies the predicate <inflation_rate>. Next, I need to enumerate all the modifiers of the predicate <inflation_rate>.
+Action: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?t) AS ?t) WHERE { ?e <pred:name> "Saint Vincent and the Grenadines" . [ <pred:fact_h> ?e ; <pred:fact_r> <inflation_rate> ; <pred:fact_t> ?e1 ] ?p ?t . }')
+Observation: [('pred:fact_r', 'inflation_rate'), ('point_in_time', '"2002-01-01"^^xsd:date'), ('pred:fact_h', 'Saint Vincent and the Grenadines'), ('pred:fact_t', '"-0.4"^^xsd:double')]
+Thought: <point_in_time> is the modifier I need. Now, I have got all the triples I need. I can now construct a SPARQL query to verify the answer.
+Action: ExecuteSPARQL('ASK { ?e <pred:name> "Saint Vincent and the Grenadines". ?e <inflation_rate> ?pv . ?pv <pred:value> ?v . ?pv <pred:unit> "percentage" . FILTER(?v > 7300) . [ <pred:fact_h> ?e ; <pred:fact_r> <inflation_rate> ; <pred:fact_t> ?pv ] <point_in_time> ?pv1 . ?pv1 <pred:year> 1999 . }')
+Observation: False
+Thought: The observation is the answer I want.
+Action: Done.

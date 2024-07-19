@@ -1,0 +1,29 @@
+# tok len: 1393
+# ID: WebQTrn-1265_82a243ce931f8f01fb19ee11126237b0
+# Who won the noble peace prize in 2007 and held his governmental position from 1-3-1977?
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Nobel Peace Prize"@en .
+#     ?e0 ns:award.award_category.winners ?c0 .
+#     ?c0 ns:award.award_honor.year ?year.
+#     FILTER(xsd:datetime(?year) >= "2007-01-01"^^xsd:dateTime)
+#     FILTER(xsd:datetime(?year) <= "2007-12-31"^^xsd:dateTime)
+#     ?c0 ns:award.award_honor.award_winner ?x .
+#     ?x ns:government.politician.government_positions_held ?c1 .
+#     ?c1 ns:government.government_position_held.from ?num .
+#     FILTER (?num > "1977-01-03"^^xsd:dateTime) .
+# }
+# ['Al Gore']
+
+Q: Who won the noble peace prize in 2007 and held his governmental position from 1-3-1977?
+Golden Entity: ['Nobel Peace Prize']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target people, win, Nobel Peace Prize), (target people, wining time, 2007), (target people, hold governmental position from, 1-3-1977). Next, I need to search for a predicate meaning "win" in the sub-graph of the entity "Nobel Peace Prize".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Nobel Peace Prize"@en }', semantic="win a award/be honored")
+Observation: [("Yasser Arafat", award.award_winner.awards_won -> award.award_honor.award, ?e), ("Refugee", award.award_winning_work.awards_won -> award.award_honor.award, ?e), ("1994 Nobel Peace Prize", award.award_ceremony.awards_presented -> award.award_honor.award, ?e), (?e, award.award_category.winners -> award.award_honor.honored_for, "Refugee"), (?e, award.award_category.winners -> award.award_honor.award_winner, "Yasser Arafat"), (?e, award.award_category.winners -> award.award_honor.ceremony, "1994 Nobel Peace Prize"), ("1960 Nobel Peace Prize", award.award_ceremony.nominees -> award.award_nomination.award, ?e), (?e, award.award_category.winners -> award.award_honor.year, "1994"^^xsd:gYear), ("Vladimir Putin", award.award_nominee.award_nominations -> award.award_nomination.award, ?e), ("Nobel Prize", award.award.category, ?e)]
+Thought: "award.award_category.winners -> award.award_honor.award_winner" is the predicate pair I want. Next, I need to find the time when the Nobel Peace Prize was awarded. According to the observation, "award.award_category.winners -> award.award_honor.year" is the predicate pair I want. Next, I need to search for a predicate meaning "hold governmental position from" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Nobel Peace Prize"@en . ?e0 ns:award.award_category.winners ?c . ?c ns:award.award_honor.award_winner ?e . }', semantic="hold governmental position from")
+Observation: [(?e, government.politician.government_positions_held -> government.government_position_held.from, "1882-01-01"^^xsd:date), (?e, government.governmental_body.members -> government.government_position_held.from, "1946"^^xsd:gYear), (?e, government.political_appointer.appointees -> government.government_position_held.from, "1902-02-01"^^xsd:date), (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.from, "1979"^^xsd:gYear), (?e, government.politician.government_positions_held -> government.government_position_held.to, "1884-12-31"^^xsd:date), (?e, government.governmental_jurisdiction.government_positions, "Member of the European Parliament"), (?e, government.governmental_body.members -> government.government_position_held.to, "1946"^^xsd:gYear), (?e, government.political_appointer.appointees -> government.government_position_held.to, "1906-04-01"^^xsd:date), (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.to, "1999"^^xsd:gYear), (?e, government.governmental_body.offices_positions, "President of the United Nations General Assembly")]
+Thought: "government.politician.government_positions_held -> government.government_position_held.from" is the predicate pair I want. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Nobel Peace Prize"@en . ?e0 ns:award.award_category.winners ?y . ?y ns:award.award_honor.year ?year . FILTER(xsd:datetime(?year) >= "2007-01-01"^^xsd:dateTime) FILTER(xsd:datetime(?year) <= "2007-12-31"^^xsd:dateTime) ?y ns:award.award_honor.award_winner ?x . ?x ns:government.politician.government_positions_held ?c . ?c ns:government.government_position_held.from ?from . FILTER(?from > "1977-01-03"^^xsd:dateTime) }')
+Observation: ['Al Gore']
+Thought: The observation is the answer I want.
+Action: Done.

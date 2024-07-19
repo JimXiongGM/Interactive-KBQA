@@ -1,0 +1,23 @@
+# tok len: 824
+# ID: train-4173
+# SPARQL: SELECT DISTINCT ?p WHERE { ?e1 <pred:name> "A Christmas Carol" . ?e1 <publication_date> ?pv . ?pv <pred:date> "2000-12-20"^^xsd:date . ?e2 <pred:name> "United Kingdom" . ?e1 ?p ?e2 . }
+# "answer": "country of origin",
+# "question": "How are A Christmas Carol, which was published on 2000-12-20, and the United Kingdom related?",
+# "sparql_complexity": 1,
+# "qtype": "QueryRelation"
+
+Q: How are A Christmas Carol, which was published on 2000-12-20, and the United Kingdom related?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (A Christmas Carol, target relation, the United Kingdom), (A Christmas Carol, publication date, 2000-12-20). Next, I need to search for a node meaning "A Christmas Carol".
+Action: SearchNodes("A Christmas Carol")
+Observation: ['A Christmas Carol | entity', 'Charles Dickens | entity', 'Scrooged | entity', 'Christmas music | entity', "It's a Wonderful Life | entity", 'Arthur Christmas | entity', 'The Nightmare Before Christmas | entity', 'The Polar Express | entity', 'Miracle on 34th Street | entity', 'Great Expectations | entity']
+Thought: "A Christmas Carol" is the entity I need. Next, I need to search for a predicate meaning "publication date" in the sub-graph of "A Christmas Carol".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "A Christmas Carol". }', semantic="publication date/release date")
+Observation: ['?e <publication_date> ?pv . ?pv <pred:date> "2000-12-20"^^xsd:date .', '?e <author> ?t . ?t <pred:name> "Charles Dickens" .', '?e <film_release_region> ?t . ?t <pred:name> "United States of America" .', '?e <title> ?pv . ?pv <pred:value> "A Christmas Carol" .', '?e <producer> ?t . ?t <pred:name> "Robert Zemeckis" .', '?e <country_of_origin> ?t . ?t <pred:name> "United Kingdom" .', '?e <part_of_the_series> ?t . ?t <pred:name> "Doctor Who" .', '?e <official_website> ?pv . ?pv <pred:value> "http://disney.go.com/disneypictures/achristmascarol/" .', '?e <genre> ?t . ?t <pred:name> "drama film" .', '?e <screenwriter> ?t . ?t <pred:name> "Robert Zemeckis" .']
+Thought: <publication_date> is the predicate I need. Next, I need to search for a node meaning "the United Kingdom".
+Action: SearchNodes("the United Kingdom")
+Observation: ['United Kingdom | entity', 'Great Britain | entity', 'Kingdom of Great Britain | entity', 'British Empire | entity', 'Prime Minister of the United Kingdom | entity', 'British Isles | entity', 'borough in the United Kingdom | concept', 'England | entity', 'British Army | entity', 'Commonwealth of Nations | entity']
+Thought: "United Kingdom" is the entity I need. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?r WHERE { ?e1 <pred:name> "A Christmas Carol" . ?e1 <publication_date> ?pv . ?pv <pred:date> "2000-12-20"^^xsd:date . ?e2 <pred:name> "United Kingdom" . { ?e1 ?r ?e2 . } UNION { ?e2 ?r ?e1 . } }')
+Observation: ['country_of_origin']
+Thought: The observation is the answer I want.
+Action: Done.

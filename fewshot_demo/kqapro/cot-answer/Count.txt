@@ -1,0 +1,7 @@
+# ID: train-50397
+Q: How many art movements are classified as 141.6 by Dewey Decimal Classification or have a founding year other than 1925?
+A: First, the art movements are classified as 141.6 by Dewey Decimal Classification is Romanticism. Second, the art movements have a founding year other than 1925 are Pre-Raphaelite Brotherhood, Impressionism, Symbolism... Finally, the number of art movements are classified as 141.6 by Dewey Decimal Classification or have a founding year other than 1925 is 11. The answer is: ['11']
+
+# ID: train-47241
+Q: How many colleges of the University of Cambridge were founded after 1596?
+A: First, the colleges of the University of Cambridge were founded after 1596 are Fitzwilliam College, Girton College ... Finally, the number of colleges of the University of Cambridge were founded after 1596 is 4. The answer is: ['4']

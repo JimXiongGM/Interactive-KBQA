@@ -1,0 +1,26 @@
+# tok len: 699
+# ID: train-19705
+# SPARQL: SELECT DISTINCT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "human" . ?e <award_received> ?e_1 . ?e_1 <pred:name> "Academy Award for Best Production Design" .  [ <pred:fact_h> ?e ; <pred:fact_r> <award_received> ; <pred:fact_t> ?e_1 ] <statement_is_subject_of> ?qpv . ?qpv <pred:value> "6th Academy Awards" .  }
+# "answer": "William S. Darling",
+# "question": "Who received the Academy Award for Best Production in the 6th Academy Awards??",
+# "sparql_complexity": 1,
+# "qtype": "QueryName"
+
+Q: Who received the Academy Award for Best Production in the 6th Academy Awards?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target entity, is a, person), (target entity, received, Academy Award for Best Production), (Academy Award for Best Production, part of, 6th Academy Awards). Next, I need to search a node meaning "Academy Award for Best Production".
+Action: SearchNodes("Academy Award for Best Production")
+Observation: ['Academy Award for Best Production Design | entity', 'Academy Award for Best Picture | entity', 'Academy Award for Best Cinematography | entity', 'Academy Award for Best Director | entity', 'Academy Award for Best Film Editing | entity', 'Academy Award for Best Costume Design | entity', 'Academy Award for Best Sound Editing | entity', 'Academy Award for Best Sound Mixing | entity', 'Academy Award for Best Story | entity', 'Academy Award for Best Animated Feature | entity']
+Thought: The entity "Academy Award for Best Production Design" is the node I need. Next, I need to search for a predicate meaning "award received".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Academy Award for Best Production Design". }', semantic="award received/win award")
+Observation: ['?h <award_received> ?e . ?h <pred:name> "Spartacus" .', '?h <nominated_for> ?e . ?h <pred:name> "Bullets Over Broadway" .', '?e <official_website> ?pv . ?pv <pred:value> "https://www.oscars.org/" .', '?e <pred:name> "Academy Award for Best Production Design" .', '?e <pred:instance_of> ?t . ?t <pred:name> "Academy Awards" .', '?h <award_received> ?e . ?h <pred:name> "Spartacus" .', '?h <award_received> ?e . ?h <pred:name> "Spartacus" .']
+Thought: <award_received> is the predicate I need. Now, I need to find the entity representing the "6th Academy Awards".
+Action: SearchNodes("6th Academy Awards")
+Observation: ['16th Academy Awards | entity', '66th Academy Awards | entity', '26th Academy Awards | entity', '61st Academy Awards | entity', '69th Academy Awards | entity', '62nd Academy Awards | entity', '36th Academy Awards | entity', '46th Academy Awards | entity', '56th Academy Awards | entity', '60th Academy Awards | entity']
+Thought: It seems that the exact entity for the "6th Academy Awards" is not listed in the observation. We know the pattern (?person <award_received> "Academy Award for Best Production Design"), therefore, I guess "6th Academy Awards" may be a modifier of the predicate <award_received>. Now, I will enumerate all the modifiers.
+Action: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?t) AS ?sample_t) WHERE { ?e0 <award_received> ?e1 . ?e1 <pred:name> "Academy Award for Best Production Design" . [ <pred:fact_h> ?e0 ; <pred:fact_r> <award_received> ; <pred:fact_t> ?e1 ] ?p ?t . } GROUP BY ?p')
+Observation: [('statement_is_subject_of', '80th Academy Awards'), ('pred:fact_r', 'award_received'), ('point_in_time', '"1990-03-26"^^xsd:date'), ('pred:fact_h', 'Dante Ferretti'), ('pred:fact_t', 'Academy Award for Best Production Design'), ('winner', 'Ian Whittaker'), ('for_work', 'Sweeney Todd: The Demon Barber of Fleet Street')]
+Thought: The modifier <statement_is_subject_of> is the one that can be used to specify the award event. Now, I will craft a SPARQL query to find the person who received the "Academy Award for Best Production Design" at the "6th Academy Awards".
+Action: ExecuteSPARQL('SELECT ?person WHERE { ?person <award_received> ?award . ?award <pred:name> "Academy Award for Best Production Design" . [ <pred:fact_h> ?person ; <pred:fact_r> <award_received> ; <pred:fact_t> ?award ] <statement_is_subject_of> ?event . ?event <pred:value> "6th Academy Awards" . }')
+Observation: ['William S. Darling']
+Thought: The observation "William S. Darling" is the answer to the question. He is the person who received the Academy Award for Best Production Design at the 6th Academy Awards.
+Action: Done.

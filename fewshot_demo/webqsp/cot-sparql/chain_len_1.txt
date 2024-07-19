@@ -1,0 +1,15 @@
+# WebQTrn-3.P0
+Q: what country is the grand bahama island in?
+A: First, the mention "grand bahama island" in Freebase is "Grand Bahama". Second, the predicate meaning "in" is "location.location.containedby", and "base.biblioness.bibs_location.loc_type" constrains the type of the location. The answer SPARQL is: SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Grand Bahama"@en . ?e0 ns:location.location.containedby ?x . ?x ns:base.biblioness.bibs_location.loc_type ?sk0 . FILTER (str(?sk0) = "Country") }
+
+# WebQTrn-7.P0
+Q: where are the nfl redskins from?
+A: First, the mention "nfl redskins" in Freebase is "Washington Redskins". Second, the predicate meaning "from" is "sports.sports_team.location". The answer SPARQL is: SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Washington Redskins"@en . ?e0 ns:sports.sports_team.location ?x . }
+
+# WebQTrn-8.P0
+Q: where did saki live?
+A: First, the mention "saki" in Freebase is "Saki". Second, the predicate meaning "live" is "people.person.place_of_birth". The answer SPARQL is: SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Saki"@en . ?e0 ns:people.person.place_of_birth ?x . }
+
+# WebQTrn-9.P0
+Q: how old is sacha baron cohen?
+A: First, the mention "sacha baron cohen" in Freebase is "Sacha Baron Cohen". Second, the predicate meaning "old" is "people.person.date_of_birth". The answer SPARQL is: SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Sacha Baron Cohen"@en . ?e0 ns:people.person.date_of_birth ?x . }

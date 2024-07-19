@@ -1,0 +1,20 @@
+# tok len: 648
+# ID: train-47241
+# SPARQL: SELECT (COUNT(DISTINCT ?e) AS ?count) WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "college of the University of Cambridge" . ?e <inception> ?pv . ?pv <pred:year> ?v . FILTER ( ?v > 1596 ) .}
+# "answer": "4",
+# "question": "How many colleges of the University of Cambridge were founded after 1596?",
+# "sparql_complexity": 3,
+# "qtype": "Count"
+
+Q: How many colleges of the University of Cambridge were founded after 1596?
+Thought: Let's first decouple this complex problem into: (target entity, is a, college of the University of Cambridge), (target entity, founding year, ?v), (?v, is greater than, 1596). Next, I need to search a node meaning "colleges of the University of Cambridge".
+Action: SearchNodes("colleges of the University of Cambridge")
+Observation: ['college of the University of Cambridge | concept', 'University of Cambridge | entity', 'college of the University of Oxford | concept', 'Cambridge | entity', "St Catharine's College, Cambridge | entity", 'University College London | entity', 'University of London | entity', 'University of Oxford | entity', 'University of Leicester | entity', 'Harvard College | entity']
+Thought: "college of the University of Cambridge" is the concept I need. Next, I need to search a predicate meaning "founding year" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "college of the University of Cambridge". }', semantic="founding year/start time")
+Observation: ['?e <parent_organization> ?t . ?t <pred:name> "University of Cambridge" .', '?e <motto_text> ?pv . ?pv <pred:value> "Souvent me souvient" .', '?h <owned_by> ?e . ?e <pred:name> "Albany" .', '?e <inception> ?pv . ?pv <pred:year> 1869 .', '?e <owner_of> ?t . ?t <pred:name> "Albany" .', '?e <headquarters_location> ?t . ?t <pred:name> "Cambridge" .', '?e <official_website> ?pv . ?pv <pred:value> "http://www.fitz.cam.ac.uk/" .', '?h <subsidiary> ?e . ?e <pred:name> "University of Cambridge" .', '?h <employer> ?e . ?e <pred:name> "Robert Smith" .', '?e <students_count> ?pv . ?pv <pred:value> "511.0"^^xsd:double . ?pv <pred:unit> "1" .']
+Thought: <inception> -> <pred:year> is the predicate pair I need. The target entity is the subject of the predicate <inception>. Next, I need to count the number of the target entities.
+Action: ExecuteSPARQL('SELECT (COUNT(DISTINCT ?e) AS ?count) WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "college of the University of Cambridge". ?e <inception> ?pv . ?pv <pred:year> ?v . FILTER ( ?v > 1596 ) . }')
+Observation: ['4']
+Thought: The observation is the answer I want.
+Action: Done.

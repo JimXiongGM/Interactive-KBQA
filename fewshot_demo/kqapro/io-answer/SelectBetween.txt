@@ -1,0 +1,7 @@
+# ID: train-1249
+Q: Which place has a lower PPP GDP per capita, Morocco with a fertility rate of 2.611, or Liberia?
+A: The answer is: ['Liberia']
+
+# ID: train-85340
+Q: Which is shorter in duration, The Help which has an exploitation visa number of 131176, or Kuch Kuch Hota Hai?
+A: The answer is: ['The Help']

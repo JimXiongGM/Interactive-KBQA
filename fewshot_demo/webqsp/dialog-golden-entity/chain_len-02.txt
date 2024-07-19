@@ -1,0 +1,40 @@
+# ID: WebQTrn-1.P0
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Natalie Portman"@en .
+#     ?e0 ns:film.actor.film ?y .
+#     ?y ns:film.performance.character ?x .
+#     ?e1 ns:type.object.name "Star Wars Episode I: The Phantom Menace"@en .
+#     ?y ns:film.performance.film ?e1 .
+# }
+Q: what character did natalie portman play in star wars?
+Golden Entity: ['Natalie Portman', 'Star Wars Episode I: The Phantom Menace']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Natalie Portman, play character in a film, target character), (the filme, is, Star Wars Episode I: The Phantom Menace). Next, I need to search for a predicate meaning "play character in a film" in the sub-graph of the entity "Natalie Portman".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Natalie Portman"@en . }', semantic="play character in a film")
+Observation: [(?e, film.actor.film -> film.performance.character, "Inés"), ("Mathilda", film.film_character.portrayed_in_films -> film.performance.actor, ?e), (?e, film.actor.film -> film.performance.character_note, "Segment "Mira Nair""), (?e, film.person_or_entity_appearing_in_film.films -> film.personal_film_appearance.film, "The Stars of Star Wars"), ("A Tale of Love and Darkness", film.film.starring -> film.performance.actor, ?e), (?e, film.person_or_entity_appearing_in_film.films -> film.personal_film_appearance.type_of_appearance, "Him/Herself"), (?e, film.actor.film -> film.performance.film, "Everyone Says I Love You"), (?e, film.producer.film, "Jane Got a Gun"), (?e, film.director.film, "New York, I Love You"), (?e, film.writer.film, "New York, I Love You")]
+Thought: "film.actor.film -> film.performance.character" means "an actor plays a character in a film", and "film.actor.film -> film.performance.film" means "an actor plays in a film". Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Natalie Portman"@en . ?e0 ns:film.actor.film ?y . ?y ns:film.performance.film ?e1 . ?e1 ns:type.object.name "Star Wars Episode I: The Phantom Menace"@en . ?y ns:film.performance.character ?x . }')
+Observation: ['Padmé Amidala']
+Thought: The observation is the answer I want.
+Action: Done.
+
+# ID: WebQTrn-2792.P0
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+# 	?e0 ns:type.object.name "United Kingdom"@en .
+# 	?e0 ns:location.statistical_region.places_exported_to ?c .
+# 	?c ns:location.imports_and_exports.exported_to ?x .
+# }
+Q: who does the uk trade with?
+Golden Entity: ['United Kingdom']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (the uk, trade with, target entity). Next, I need to search for a predicate meaning "trade with" in the sub-graph of the entity "United Kingdom".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "United Kingdom"@en }', semantic="a country trades with another country")
+Observation: [("Pound sterling", finance.currency.countries_used, ?e), (?e, location.statistical_region.places_exported_to -> location.imports_and_exports.exported_to, "United States of America"), (?e, sports.sport_country.athletes -> sports.competitor_country_relationship.sports, "Swimming"), (?e, sports.sport_country.athletes -> sports.competitor_country_relationship.competitor, "Janice Burton"), (?e, location.statistical_region.places_imported_from -> location.imports_and_exports.imported_from, "United States of America"), (?e, location.country.currency_used, "Pound sterling"), (?e, location.statistical_region.places_exported_to -> location.imports_and_exports.currency, "United States Dollar"), (?e, location.statistical_region.places_imported_from -> location.imports_and_exports.currency, "United States Dollar"), ("Embassy of Switzerland, London", user.skud.embassies_and_consulates.embassy.to_country, ?e), ("Cannabis Is Safer Than Alcohol", government.political_party.country, ?e)]
+Thought: There is no predicate meaning "trade with". Maybe I should try other keywords.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "United Kingdom"@en }', semantic="a country export goods")
+Observation: [(?e, location.statistical_region.places_exported_to -> location.imports_and_exports.exported_to, "United States of America"), (?e, location.statistical_region.places_exported_to -> location.imports_and_exports.date, "2008"^^xsd:gYear), (?e, location.statistical_region.places_exported_to -> location.imports_and_exports.amount, "8.5385e+09"^^xsd:float), (?e, location.statistical_region.places_exported_to -> location.imports_and_exports.currency, "United States Dollar"), (?e, location.statistical_region.places_imported_from -> location.imports_and_exports.imported_from, "United States of America"), (?e, location.statistical_region.places_imported_from -> location.imports_and_exports.date, "2006"^^xsd:gYear), ("Pound sterling", finance.currency.countries_used, ?e), (?e, location.statistical_region.places_imported_from -> location.imports_and_exports.amount, "1.31451e+10"^^xsd:float), ("Bachata", food.beer.country, ?e), ("Cheddar cheese", food.cheese.country_of_origin, ?e)]
+Thought: "location.statistical_region.places_exported_to -> location.imports_and_exports.exported_to" is the predicate pair I need. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "United Kingdom"@en . ?e0 ns:location.statistical_region.places_exported_to ?c0 . ?c0 ns:location.imports_and_exports.exported_to ?x . }')
+Observation: ['Angola', 'United States of America', 'Sierra Leone', 'Canada', 'Anguilla']
+Thought: The observation is the answer I want.
+Action: Done.

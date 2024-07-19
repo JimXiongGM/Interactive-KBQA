@@ -1,0 +1,26 @@
+# tok len: 1259
+# ID: train-85340
+# SPARQL: SELECT ?e WHERE { { ?e <pred:name> "Kuch Kuch Hota Hai" . } UNION { ?e <pred:name> "The Help" . ?e <exploitation_visa_number> ?pv1 . ?pv1 <pred:value> "131176" . } ?e <duration> ?pv . ?pv <pred:value> ?v . } ORDER BY ?v LIMIT 1
+# "answer": "The Help",
+# "question": "Which is shorter in duration, The Help which has an exploitation visa number of 131176, or Kuch Kuch Hota Hai?",
+# "sparql_complexity": 3,
+# "qtype": "SelectBetween"
+
+Q: Which is shorter in duration, The Help which has an exploitation visa number of 131176, or Kuch Kuch Hota Hai?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (The Help, duration, ?v1), (The Help, exploitation visa number, 131176), (Kuch Kuch Hota Hai, duration, ?v2), (compare, ?v1, ?v2). Next, I need to search for a node about "The Help".
+Action: SearchNodes("The Help")
+Observation: ['The Help | entity', 'The Troubles | entity', 'The Rescuers | entity', 'The Host | entity', 'The Missing | entity', 'The Gift | entity', 'The Messenger | entity', 'The Mission | entity', 'The Conversation | entity', 'The Interpreter | entity']
+Thought: "The Help" is the entity I need. Next, I need to search for a predicate meaning "duration" in the sub-graph of the entity "The Help".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "The Help". }', semantic="duration/running time/length")
+Observation: ['?e <duration> ?pv . ?pv <pred:value> "146.0"^^xsd:double . ?pv <pred:unit> "minute" .', '?e <cost> ?pv . ?pv <pred:value> "2.5e+07"^^xsd:double . ?pv <pred:unit> "United States dollar" .', '?e <genre> ?t . ?t <pred:name> "drama film" .', '?e <composer> ?t . ?t <pred:name> "Thomas Newman" .', '?e <title> ?pv . ?pv <pred:value> "The Help" .', '?e <producer> ?t . ?t <pred:name> "Chris Columbus" .', '?e <number_of_pages> ?pv . ?pv <pred:value> "451.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <publication_date> ?pv . ?pv <pred:year> 2009 .', '?e <award_received> ?t . ?t <pred:name> "Academy Award for Best Supporting Actress" .', '?e <box_office> ?pv . ?pv <pred:value> "2.166e+08"^^xsd:double . ?pv <pred:unit> "United States dollar" .']
+Thought: <duration> is the predicate I need. Next, I need to search for a predicate meaning "exploitation visa number" in the sub-graph of the entity "The Help".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "The Help". }', semantic="exploitation visa number")
+Observation: ['?e <exploitation_visa_number> ?pv . ?pv <pred:value> "131176" .', '?e <OCLC_control_number> ?pv . ?pv <pred:value> "233548220" .', '?e <number_of_pages> ?pv . ?pv <pred:value> "451.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <country_of_origin> ?t . ?t <pred:name> "United States of America" .', '?e <ISBN-13> ?pv . ?pv <pred:value> "978-4-08-760641-6" .', '?e <derivative_work> ?t . ?t <pred:name> "The Help" .', '?h <derivative_work> ?e . ?e <pred:name> "The Help" .', '?e <language_of_work_or_name> ?t . ?t <pred:name> "English" .', '?e <ISBN-10> ?pv . ?pv <pred:value> "0-399-15534-1" .', '?e <title> ?pv . ?pv <pred:value> "The Help" .']
+Thought: <exploitation_visa_number> is the predicate I need. Next, I need to search for a node about "Kuch Kuch Hota Hai".
+Action: SearchNodes("Kuch Kuch Hota Hai")
+Observation: ['Kuch Kuch Hota Hai | entity', 'Kal Ho Naa Ho | entity', 'Dilwale Dulhania Le Jayenge | entity', 'My Name Is Khan | entity', 'Veer-Zaara | entity', 'Shahrukh Khan | entity', 'Rang De Basanti | entity', 'Kajol | entity', 'Main Hoon Na | entity', 'Hrithik Roshan | entity']
+Thought: "Kuch Kuch Hota Hai" is the entity I need. According to the semantic of the question, I guess "Kuch Kuch Hota Hai" also has a predicate <duration>. Now, I have all the information I need. It seems to be a union-type question. I should query the common predicate <duration> of the entities. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT ?e WHERE { { ?e <pred:name> "The Help" . ?e <exploitation_visa_number> ?visa . ?visa <pred:value> "131176" . } UNION { ?e <pred:name> "Kuch Kuch Hota Hai" . } ?e <duration> ?duration . ?duration <pred:value> ?duration_value . } ORDER BY ASC(?duration_value) LIMIT 1')
+Observation: ['The Help']
+Thought: The observation is the answer I want.
+Action: Done.

@@ -1,0 +1,23 @@
+# tok len: 967
+# ID: train-50397
+# SPARQL: SELECT (COUNT(DISTINCT ?e) AS ?count) WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "art movement" . { ?e <Dewey_Decimal_Classification> ?pv . ?pv <pred:value> "141.6" . } UNION { ?e <inception> ?pv . ?pv <pred:year> ?v . FILTER ( ?v != 1925 ) . } }
+# "answer": "11",
+# "question": "How many art movements are classified as 141.6 by Dewey Decimal Classification or have a founding year other than 1925?",
+# "sparql_complexity": 4,
+# "qtype": "Count"
+
+Q: How many art movements are classified as 141.6 by Dewey Decimal Classification or have a founding year other than 1925?
+Thought: Let's first decouple this complex problem into: (target entity, is a, art movement), (target entity, Dewey Decimal Classification, 141.6), (target entity, founding year, ?v), (?v, is not, 1925). Next, I need to search a node meaning "art movement".
+Action: SearchNodes("art movement")
+Observation: ['art movement | concept', 'art school | concept', 'art form | concept', 'art rock | entity', 'art of painting | entity', 'art exhibition | concept', 'social movement | concept', 'art | concept', 'pop art | entity', 'art critic | entity']
+Thought: "art movement" is the concept node I need. Next, I need to search a predicate meaning "Dewey Decimal Classification" in the sub-graph of the "art movement" concept.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "art movement". }', semantic="Dewey Decimal Classification")
+Observation: ['?e <Dewey_Decimal_Classification> ?pv . ?pv <pred:value> "709.04042" .', '?e <PhilPapers_topic> ?pv . ?pv <pred:value> "existentialism" .', '?h <genre> ?e . ?e <pred:name> "Haruki Murakami" .', '?h <main_subject> ?e . ?e <pred:name> "Groundhog Day" .', '?h <architectural_style> ?e . ?e <pred:name> "Riga" .', '?e <ISNI> ?pv . ?pv <pred:value> "0000 0000 9993 5375" .', '?e <field_of_work> ?t . ?t <pred:name> "architecture" .', '?h <field_of_work> ?e . ?e <pred:name> "National Film Board of Canada" .', '?e <inception> ?pv . ?pv <pred:year> 1848 .', '?e <country> ?t . ?t <pred:name> "France" .']
+Thought: <Dewey_Decimal_Classification> -> <pred:value> is the predicate pair I need. Next, I need to search for a predicate meaning "founding year".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "art movement". }', semantic="founding year/start time")
+Observation: ['?e <start_time> ?pv . ?pv <pred:year> 1970 .', '?e <country_of_origin> ?t . ?t <pred:name> "United Kingdom" .', '?h <main_subject> ?e . ?e <pred:name> "Groundhog Day" .', '?e <inception> ?pv . ?pv <pred:year> 1848 .', '?e <field_of_work> ?t . ?t <pred:name> "architecture" .', '?h <field_of_work> ?e . ?e <pred:name> "National Film Board of Canada" .', '?e <country> ?t . ?t <pred:name> "France" .', '?e <end_time> ?pv . ?pv <pred:year> 1910 .', '?h <part_of> ?e . ?e <pred:name> "baroque music" .', '?e <follows> ?t . ?t <pred:name> "Art Nouveau" .']
+Thought: <inception> -> <pred:year> is the predicate pair I need. Next, I need to count the number of the target entities. It seems to be a union-type question.
+Action: ExecuteSPARQL('SELECT (COUNT(DISTINCT ?e) AS ?count) WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "art movement". { ?e <Dewey_Decimal_Classification> ?pv . ?pv <pred:value> "141.6" . } UNION { ?e <inception> ?pv . ?pv <pred:year> ?v . FILTER ( ?v != 1925 ) . } }')
+Observation: ['11']
+Thought: The observation is the answer I want.
+Action: Done.

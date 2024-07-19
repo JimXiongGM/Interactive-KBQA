@@ -1,0 +1,7 @@
+# ID: train-93543
+Q: What is Joe Morton's role in Ali starring Giancarlo Esposito?
+A: The answer is: ['Chauncey Eskridge']
+
+# ID: train-41347
+Q: When was Donald Trump (the one whose ISNI is 0000 0001 0898 6765) nominated for Golden Raspberry Award for Worst New Star ?
+A: The answer is: ['1990']

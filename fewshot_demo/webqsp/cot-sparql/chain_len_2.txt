@@ -1,0 +1,15 @@
+# WebQTrn-5.P0
+Q: what character did john noble play in lord of the rings?
+A: First, the mention "john noble" in Freebase is "John Noble" and the "lord of the rings" is "The Lord of the Rings: The Two Towers". Second, the predicate meaning "play in" is "film.actor.film -> film.performance.character", and "film.performance.film" connects a film to an film event. The answer SPARQL is: SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "John Noble"@en . ?e0 ns:film.actor.film ?y . ?y ns:film.performance.character ?x . ?e1 ns:type.object.name "The Lord of the Rings: The Two Towers"@en . ?y ns:film.performance.film ?e1 . }
+
+# WebQTrn-6.P0
+Q: who does joakim noah play for?
+A: First, the mention "joakim noah" in Freebase is "Joakim Noah". Second, the predicate meaning "play for" is "sports.pro_athlete.teams -> sports.sports_team_roster.team", and "sports.sports_team_roster.from" and "sports.sports_team_roster.to" connect a team to a time. The answer SPARQL is: SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Joakim Noah"@en . ?e0 ns:sports.pro_athlete.teams ?y . ?y ns:sports.sports_team_roster.team ?x . FILTER ( NOT EXISTS { ?y ns:sports.sports_team_roster.from ?sk0 } || EXISTS { ?y ns:sports.sports_team_roster.from ?sk1 . FILTER(xsd:datetime(?sk1) <= "2015-08-10"^^xsd:dateTime) } ) FILTER ( NOT EXISTS { ?y ns:sports.sports_team_roster.to ?sk2 } || EXISTS { ?y ns:sports.sports_team_roster.to ?sk3 . FILTER(xsd:datetime(?sk3) >= "2015-08-10"^^xsd:dateTime) } ) }"
+
+# WebQTrn-20.P0
+Q: where to fly into bali?
+A: First, the mention "bali" in Freebase is "Bali". Second, the predicate meaning "fly into" is "travel.travel_destination.how_to_get_here -> travel.transportation.transport_terminus", and "travel.transportation.mode_of_transportation" connects a transportation terminus to a mode of transportation. The answer SPARQL is: SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Bali"@en . ?e0 ns:travel.travel_destination.how_to_get_here ?y . ?y ns:travel.transportation.transport_terminus ?x . ?e1 ns:type.object.name "Air Transportation"@en . ?y ns:travel.transportation.mode_of_transportation ?e1 . }
+
+# WebQTrn-23.P0
+Q: what high school did president bill clinton attend?
+A: First, the mention "president bill clinton" in Freebase is "Bill Clinton". Second, the predicate meaning "attend" is "people.person.education -> education.education.institution", and "common.topic.notable_types" constrains the type of the institution. The answer SPARQL is: SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Bill Clinton"@en . ?e0 ns:people.person.education ?y . ?y ns:education.education.institution ?x . ?e1 ns:type.object.name "School"@en . ?x ns:common.topic.notable_types ?e1 . }

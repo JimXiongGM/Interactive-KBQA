@@ -1,0 +1,7 @@
+# WebQTrn-3.P0
+Q: what country is the grand bahama island in?
+A: The answer is: ["Bahamas"]
+
+# ID: WebQTrn-4.P0
+Q: what kind of money to take to bahamas?
+A: The answer is: ["Bahamian dollar"]

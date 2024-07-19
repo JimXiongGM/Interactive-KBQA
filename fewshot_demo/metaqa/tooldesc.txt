@@ -1,0 +1,44 @@
+# v1.0
+When given a question, you need to utilize specific tools to interact with a locally deployed movie knowledge graph and compose a SPARQL query to obtain the answer. The following document includes descriptions of the tools and some crucial graph patterns (KG schema).
+
+1. SearchNodes(query)
+Description: Searches for nodes in the knowledge graph based on the surface name.
+Example: To find "ginger rogers": SearchNodes("ginger rogers") will return: ['"ginger rogers" | A tag.', '"Ginger Rogers" | A person node.', ...], which means that "ginger rogers" is a tag, and "Ginger Rogers" is a person node.
+
+2. ExecuteSPARQL(sparql)
+Description: Executes a SPARQL query. You can explore the KG freely using this tool.
+Example: To find the name of node <e0>, simply use: ExecuteSPARQL('SELECT ?n WHERE { <e0> <name> ?n . }').
+
+3. SearchGraphPatterns(sparql, semantic)
+Description: The parameter sparql MUST start with "SELECT ?e WHERE". The tool will query the subgraphs with ?e as the head or tail entities, respectively, and return them together. The semantic parameter indicates the expected predicate semantics. If provided, the tool will sort the queried subgraphs by semantics. If not, the tool returns the entire subgraph. Note! This tool will return a randomly instantiated triple; you should pay attention to the semantics of the predicate, not the specific names of the head entity or the tail entity.
+Example: To find out the director of the movie "The Matrix", you can: SearchGraphPatterns('SELECT ?e WHERE { ?e <name> "The Matrix" . }', semantic="director of"), it will return: [(?e, starred_actors, "Keanu Reeves"), ...], therefore, "starred_actors" is the target predicate, and "Keanu Reeves" is one of the actors.
+
+Critical pattern 1: tag and node are different.
+If the tag is what you want, the SPARQL query is: SELECT ?e WHERE { ?e <has_tags> "ginger rogers" . }, if the node is what you want, the SPARQL query is: SELECT ?e WHERE { ?e <name> "Ginger Rogers" . }
+
+Critical pattern 2: Pay attention to the direction of the SPARQL query.
+If asked: SearchGraphPatterns('SELECT ?e WHERE { ?e <name> "aaa" . }', semantic="co-star")
+If the observation is ("bbb", starred_actors, ?e), where "bbb" is the head node of ?e, so the next SPARQL query is supposed to be: SELECT ?e WHERE { ?e <starred_actors> ?e0. ?e0 <name> "aaa" . }.
+Similarly, if the observation is (?e, starred_actors, "bbb"), where "bbb" is the tail node of ?e, so the next SPARQL query is supposed to be: SELECT ?e WHERE { ?e0 <starred_actors> ?e. ?e0 <name> "aaa" . }.
+
+Critical pattern 3: Add a FILTER to the SPARQL query if it contains a ring structure.
+For example, to find the co-actor of "aa", the SPARQL query should be: SELECT ?x WHERE { ?e0 <name> "aa" . ?e <starred_actors> ?e0 . ?e <starred_actors> ?x . FILTER(?x != ?e0) . }
+
+Knowledge graph schema: This knowledge graph is relatively simple, and the schema is consists of 10 types of triples, each triple is consists of 3 elements: (head entity, predicate, tail entity), for example, (movie, directed_by, person) means that the head entity is a movie, the tail entity is a person, and the predicate is directed_by. The complete schema is as follows:
+(movie, directed_by, person)
+(movie, written_by, person)
+(movie, starred_actors, person)
+(movie, release_year, year)
+(movie, in_language, string)
+(movie, has_tags, string)
+(movie, has_genre, string)
+(movie, name, string)
+(movie, has_imdb_votes, string)
+(movie, has_imdb_rating, string)
+
+Remember:
+ALWAYS use ExecuteSPARQL to provide the final SPARQL query.
+Finally, you MUST use "Action: Done." to stop.
+Strictly adhere to the format of the demos!
+
+Now, Think and solve the following complex questions step by step:

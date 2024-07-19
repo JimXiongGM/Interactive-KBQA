@@ -1,0 +1,35 @@
+# tok len: 2138
+# ID: WebQTrn-3257_f085fa4c2b6c7af6fd1f07e269a418de
+# What team that won the 1956 Pequeña Copa del Mundo de Clubes championship does Cristiano Ronaldo play for in 2012?
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Cristiano Ronaldo"@en .
+#     ?e0 ns:sports.pro_athlete.teams ?c .
+#     ?c ns:sports.sports_team_roster.team ?x .
+#     ?e1 ns:type.object.name "1956 Pequeña Copa del Mundo de Clubes"@en .
+#     ?x ns:sports.sports_team.championships ?e1 .
+#     FILTER(NOT EXISTS {?c ns:sports.sports_team_roster.from ?sk0} ||
+#     EXISTS {?c ns:sports.sports_team_roster.from ?sk1 .
+#     FILTER(xsd:datetime(?sk1) <= "2012-12-31"^^xsd:dateTime) })
+#     FILTER(NOT EXISTS {?c ns:sports.sports_team_roster.to ?sk2} ||
+#     EXISTS {?c ns:sports.sports_team_roster.to ?sk3 .
+#     FILTER(xsd:datetime(?sk3) >= "2012-01-01"^^xsd:dateTime) })
+# }
+# ['Real Madrid C.F.']
+
+Q: What team that won the 1956 Pequeña Copa del Mundo de Clubes championship does Cristiano Ronaldo play for in 2012?
+Golden Entity: ['Cristiano Ronaldo', '1956 Pequeña Copa del Mundo de Clubes']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target team, won a championship, 1956 Pequeña Copa del Mundo de Clubes), (Cristiano Ronaldo, play for a team, target team), (serving time, in, 2012). Next, I need to search for a predicate meaning "play for a team" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Cristiano Ronaldo"@en }', semantic="plays for/is enlisted/is a member of/represents a team")
+Observation: [(?e, soccer.football_player.matches_played -> soccer.football_player_match_participation.team, "Real Madrid C.F."), (?e, soccer.football_player.matches_played -> soccer.football_player_match_participation.part_of_starting_lineup, "true"), (?e, soccer.football_player.matches_played -> soccer.football_player_match_participation.match, "2014 UEFA Champions League Final"), ("Portugal national football team", sports.sports_team.roster -> sports.sports_team_roster.player, ?e), ("2014 UEFA Champions League Final", soccer.football_match.players -> soccer.football_player_match_participation.player, ?e), (?e, sports.pro_athlete.teams -> sports.sports_team_roster.team, "Portugal national football team"), (?e, sports.pro_athlete.teams -> sports.sports_team_roster.position, "Forward"), (?e, sports.pro_athlete.sports_played_professionally -> sports.pro_sports_played.sport, "Football"), (?e, soccer.football_player.matches_played -> soccer.football_player_match_participation.shirt_number, "7"^^xsd:integer), ("Forward", sports.sports_position.players -> sports.sports_team_roster.player, ?e)]
+Thought: "sports.pro_athlete.teams -> sports.sports_team_roster.team" is the predicate pair I want. Next, I need to search for a predicate meaning "won a championship" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Cristiano Ronaldo"@en . ?e0 ns:sports.pro_athlete.teams ?c . ?c ns:sports.sports_team_roster.team ?e . }', semantic="won a championship")
+Observation: [(?e, sports.sports_team.championships, "1962–63 La Liga"), ("Peter Schmeichel", sports.sports_award_winner.awards -> sports.sports_award.team, ?e), ("1952 Pequeña Copa del Mundo de Clubes", sports.sports_championship_event.champion, ?e), (?e, sports.sports_team.founded, "1878"^^xsd:gYear), ("IFFHS World's Best Goalkeeper", sports.sports_award_type.winners -> sports.sports_award.team, ?e), ("Football", sports.sport.teams, ?e), ("Fred the red", sports.mascot.team, ?e), ("Ryan Giggs", sports.sports_team_coach.teams_coached -> sports.sports_team_coach_tenure.team, ?e), ("2007–08 UEFA Champions League", sports.sports_league_season.awards -> sports.sports_award.award_winner, ?e), ("2003 Football League Cup Final", sports.sports_championship_event.runner_up, ?e)]
+Thought: "sports.sports_team.championships" is the predicate I want. Next, I need to enumerate all the championships and find the one about "1956 Pequeña Copa del Mundo de Clubes".
+Action: ExecuteSPARQL('SELECT DISTINCT ?x { ?e0 ns:type.object.name "Cristiano Ronaldo"@en . ?e0 ns:sports.pro_athlete.teams ?c . ?c ns:sports.sports_team_roster.team ?e . ?e ns:sports.sports_team.championships ?x . ?x ns:type.object.name ?xn . FILTER(REGEX(?xn, "1956", "i")) }')
+Observation: ['1956 Pequeña Copa del Mundo de Clubes', '1956 European Cup Final']
+Thought: "1956 Pequeña Copa del Mundo de Clubes" is the championship node I want. The facts I have so far are: (?e0 ns:type.object.name "Cristiano Ronaldo"@en . ?e0 ns:sports.pro_athlete.teams ?c . ?c ns:sports.sports_team_roster.team ?t . ?e1 ns:type.object.name "1956 Pequeña Copa del Mundo de Clubes"@en . ?t ns:sports.sports_team.championships ?e1 .). According to the Freebase schema, I can use the predicate "sports.sports_team_roster.from" and "sports.sports_team_roster.to" to constrain the serving time. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Cristiano Ronaldo"@en . ?e0 ns:sports.pro_athlete.teams ?c . ?c ns:sports.sports_team_roster.team ?x . ?club ns:type.object.name "1956 Pequeña Copa del Mundo de Clubes"@en . ?x ns:sports.sports_team.championships ?club . ?c ns:sports.sports_team_roster.from ?from . FILTER(xsd:datetime(?from) <= "2012-12-31"^^xsd:dateTime) ?c ns:sports.sports_team_roster.to ?to . FILTER(xsd:datetime(?to) >= "2012-01-01"^^xsd:dateTime) }')
+Observation: ['Real Madrid C.F.']
+Thought: The observation is the answer I want.
+Action: Done.

@@ -1,0 +1,23 @@
+# tok len: 1157
+# ID: train-12224
+# SPARQL: SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "country" . ?e <total_fertility_rate> ?pv1 . ?pv1 <pred:unit> "1" . ?pv1 <pred:value> ?v1 . FILTER ( ?v1 != "5.0"^^xsd:double ) . ?e <area> ?pv . ?pv <pred:value> ?v . } ORDER BY ?v LIMIT 1
+# "answer": "Faroe Islands",
+# "question": "Of countries with other than 5.0 total rate of fertility, which takes up the least area?",
+# "sparql_complexity": 3,
+# "qtype": "SelectAmong"
+
+Q: Of countries with other than 5.0 total rate of fertility, which takes up the least area?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target entity, is a, country), (target entity, total fertility rate, ?v), (?v, !=, 5.0), (target entity, area, ?v1), (target entity, order by, ?v1). Next, I need to search for a node meaning "country".
+Action: SearchNodes("country")
+Observation: ['country | concept', 'town | concept', 'city | concept', 'world | entity', 'France | entity', 'Canada | entity', 'state | concept', 'England | entity', 'country pop | entity', 'historical country | concept']
+Thought: "country" is the concept I need. Next, I need to search for a predicate meaning "total fertility rate" in the concept "country" sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "country". }', semantic="total fertility rate/birth rate")
+Observation: ['?e <total_fertility_rate> ?pv . ?pv <pred:value> "2.5"^^xsd:double . ?pv <pred:unit> "1" .', '?e <population> ?pv . ?pv <pred:value> "14974.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <life_expectancy> ?pv . ?pv <pred:value> "80.1878"^^xsd:double . ?pv <pred:unit> "year" .', '?e <total_reserves> ?pv . ?pv <pred:value> "4.30544e+10"^^xsd:double . ?pv <pred:unit> "United States dollar" .', '?e <unemployment_rate> ?pv . ?pv <pred:value> "7.0"^^xsd:double . ?pv <pred:unit> "percentage" .', '?e <Human_Development_Index> ?pv . ?pv <pred:value> "0.909"^^xsd:double . ?pv <pred:unit> "1" .', '?e <nominal_GDP_per_capita> ?pv . ?pv <pred:value> "44299.8"^^xsd:double . ?pv <pred:unit> "United States dollar" .', '?e <number_of_out-of-school_children> ?pv . ?pv <pred:value> "462.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <retirement_age> ?pv . ?pv <pred:value> "67.0"^^xsd:double . ?pv <pred:unit> "years old" .', '?e <real_gross_domestic_product_growth_rate> ?pv . ?pv <pred:value> "2.1"^^xsd:double . ?pv <pred:unit> "percentage" .']
+Thought: <total_fertility_rate> is the predicate I need. Next, I need to search for a predicate meaning "area" in the sub-graph of the concept "country".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "country". }', semantic="area/region/territory")
+Observation: ['?e <area> ?pv . ?pv <pred:value> "240.0"^^xsd:double . ?pv <pred:unit> "square kilometre" .', '?h <location> ?e . ?e <pred:name> "Battle of France" .', '?e <country> ?t . ?t <pred:name> "United Kingdom" .', '?h <country> ?e . ?e <pred:name> "Limburg" .', '?e <continent> ?t . ?t <pred:name> "Europe" .', '?e <population> ?pv . ?pv <pred:value> "14974.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <perimeter> ?pv . ?pv <pred:value> "1117.0"^^xsd:double . ?pv <pred:unit> "kilometre" .', '?e <currency> ?t . ?t <pred:name> "pound sterling" .', '?e <capital> ?t . ?t <pred:name> "Cardiff" .', '?e <part_of> ?t . ?t <pred:name> "European Union" .']
+Thought: <area> is the predicate I need. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "country" . ?e <total_fertility_rate> ?rate . ?rate <pred:unit> "1" . ?rate <pred:value> ?rate_value . FILTER ( ?rate_value != "5.0"^^xsd:double ) . ?e <area> ?area . ?area <pred:value> ?area_value . } ORDER BY ?area_value LIMIT 1')
+Observation: ['Faroe Islands']
+Thought: The observation is the answer I want.
+Action: Done.

@@ -1,0 +1,26 @@
+# tok len: 1142
+# ID: WebQTrn-2678_93995ecbdd166fc16365a56ed489eec0
+# What zoo that opened earliest is there to see in Dallas, TX?
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Dallas"@en .
+#     ?e0 ns:travel.travel_destination.tourist_attractions ?x .
+#     ?x ns:zoos.zoo.opened ?num .
+# } ORDER BY ?num LIMIT 1
+# ['Dallas Zoo']
+
+Q: What zoo that opened earliest is there to see in Dallas, TX?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target zoo, locate in, "Dallas, TX"), (target zoo, opened, earliest). According to my knowledge, the entity name of "Dallas, TX" in Freebase may be "Dallas". Next, I need to search a node meaning "Dallas".
+Action: SearchNodes("Dallas")
+Observation: ['"Dallas" | Description: Dallas is a film directed by Stuart Heisler released on December 30, 1950.| Description: Dallas is an American Western Technicolor film directed by Stuart Heisler, and starring Gary Cooper,...| Description: Dallas is a fictional character from Enigma: The Best of Jeff Hardy.| Description: The city of Dallas is the county seat of Polk County, Oregon, United States. The population was 14,5...| Description: Dallas is a major city in Texas and is the largest urban center of the fourth most populous metropol...| Description: Dallas is fictional character from the television series Austin & Ally.| Description: Dallas is a long-running American prime time television soap opera that aired from April 2, 1978, to...| Description: Dallas is a fictional character from the 2012 film The Coalition.| Description: Dallas is a fictional character from 1939 film Stagecoach and its 1966 and 1986 remakes, adapted fro...| Description: Dallas is an American television drama series developed b', '"Dallas (da Dallas)" | No description.', '":Dallas" | No description.', '"Old East Dallas, Dallas" | Description: Old East Dallas is a community consisting of several neighborhoods in east Dallas, Texas,. In 1890, ...', '"Ya Dalla Dallaa ~ Bii El Jamal" | No description.', '"يا دلع دلع Ya Dalla Dallaa" | No description.', '"Dallas High School - Dallas Oregon" | No description.', '"Barry Dallas" | Description: Barry Mitchell Dallas OBE JP was a New Zealand politician and doctor. He was twice mayor of Greymout...', '"Battle Dallas" | No description.', '"Audelia, Dallas" | Description: Audelia is an area in Dallas, Texas, United States that formerly was a distinct unincorporated commu...']
+Thought: "Dallas" with "Dallas is a major city in Texas" is the node I want. Next, I need to search for a predicate meaning "locate in" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Dallas"@en . ?e ns:common.topic.description ?desc . FILTER regex(?desc, "Dallas is a major city in Texas") }', semantic="someplace to see")
+Observation: [("American Airlines Center", travel.tourist_attraction.near_travel_destination, ?e), (?e, travel.travel_destination.tourist_attractions, "American Airlines Center"), (?e, location.location.events, "1996 NCAA Men's Division I Basketball Tournament- Midwest Regional Second Round"), (?e, location.location.area, "999.3"^^xsd:float), ("License to Kill", film.film.featured_film_locations, ?e), (?e, location.location.people_born_here, "Katie Gold"), ("1996 NCAA Men's Division I Basketball Tournament- Midwest Regional Second Round", time.event.locations, ?e), ("Booker Woodfox", people.person.places_lived -> people.place_lived.location, ?e), ("United Methodist Church", organization.organization.place_founded, ?e), ("Dallas International Film Festival", film.film_festival.location, ?e)]
+Thought: "travel.travel_destination.tourist_attractions" is the predicate I want. Next, I need to search for a predicate meaning "zoo" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Dallas"@en . ?e0 ns:travel.travel_destination.tourist_attractions ?e . }', semantic="zoo")
+Observation: [("South Africa", zoos.zoo_exhibit.zoo, ?e), (?e, zoos.zoo.exhibits, "Orinoco Avian Trail"), (?e, zoos.zoo.opened, "1888"^^xsd:gYear), (?e, zoos.zoo.category, "Zoo"), ("Zoo", zoos.zoo_category.zoos, ?e), (?e, zoos.zoo.memberships, "Association of Zoos and Aquariums"), ("Bonnie Pitman", architecture.museum_director.museum, ?e), (?e, architecture.museum.established, "1993-10"^^xsd:gYearMonth), (?e, architecture.museum.type_of_museum, "Art Gallery"), ("Dallas Cowboys", sports.sports_team.arena_stadium, ?e)]
+Thought: "zoos.zoo.opened" is the predicate I want. Now, I have all the information I need. I can construct the SPARQL query. 
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Dallas"@en . ?e0 ns:common.topic.description ?desc . FILTER regex(?desc, "Dallas is a major city in Texas") ?e0 ns:travel.travel_destination.tourist_attractions ?x . ?e ns:zoos.zoo.opened ?num . } ORDER BY ?num LIMIT 1')
+Observation: ['Nasher Sculpture Center']
+Thought: The observation is the answer I want.
+Action: Done.

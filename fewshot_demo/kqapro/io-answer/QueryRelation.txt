@@ -1,0 +1,7 @@
+# ID: train-60872
+Q: How are Avex Trax and Minato-ku related?
+A: The answer is: ['headquarters location in']
+
+# ID: train-4173
+Q: How are A Christmas Carol, which was published on 2000-12-20, and the United Kingdom related?
+A: The answer is: ['country of origin']

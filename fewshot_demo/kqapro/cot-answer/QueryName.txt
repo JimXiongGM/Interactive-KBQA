@@ -1,0 +1,7 @@
+# ID: train-11276
+Q: What sovereign state has Bulgaria–Slovenia diplomatic relations with Bulgaria?
+A: First, the sovereign state has Bulgaria–Slovenia diplomatic relations with Bulgaria is Slovenia. The answer is: ['Slovenia']
+
+# ID: train-19705
+Q: Who received the Academy Award for Best Production in the 6th Academy Awards?
+A: First, the person received the Academy Award for Best Production in the 6th Academy Awards is William S. Darling. The answer is: ['William S. Darling']

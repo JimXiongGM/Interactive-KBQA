@@ -1,0 +1,7 @@
+openai
+requests
+tqdm
+fire
+pyyaml
+datetime
+loguru

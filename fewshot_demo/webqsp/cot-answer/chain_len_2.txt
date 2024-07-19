@@ -1,0 +1,7 @@
+# ID: WebQTrn-1.P0
+Q: what character did natalie portman play in star wars?
+A: Natalie Portman played the character of Padmé Amidala in the movie Star Wars. The answer is: ["Padmé Amidala"]
+
+# ID: WebQTrn-2792.P0
+Q: who does the uk trade with?
+A: The UK trades with the countries United States, Angola, Sierra Leone, Canada, and Anguilla. The answer is: ['Angola', 'United States of America', 'Sierra Leone', 'Canada', 'Anguilla']

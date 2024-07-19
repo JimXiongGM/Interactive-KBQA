@@ -1,0 +1,22 @@
+asyncio
+openai
+elasticsearch
+SPARQLWrapper
+chromadb #>=0.3.26
+fastapi
+requests
+tenacity
+tqdm
+fire
+pyyaml
+datetime
+loguru
+transformers
+sentencepiece
+deepspeed
+dataset
+wandb
+peft
+scipy
+vllm
+fastchat

@@ -1,0 +1,7 @@
+# ID: train-3430
+Q: Which French region with a population other than 20000 has the most weddings per year?
+A: The answer is: ['Normandy']
+
+# ID: train-12224
+Q: Of countries with other than 5.0 total rate of fertility, which takes up the least area?
+A: The answer is: ['Faroe Islands']

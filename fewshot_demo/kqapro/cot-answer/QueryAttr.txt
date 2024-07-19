@@ -1,0 +1,7 @@
+# ID: train-68156
+Q: Which ISNI designates the person who married Cameron Diaz on 2015-01-05?
+A: First, the person who married Cameron Diaz on 2015-01-05 is Benji Madden. Second, the ISNI designates Benji Madden is 0000 0000 7149 3587. Finally, the answer is: ['0000 0000 7149 3587']
+
+# ID: train-51356
+Q: What is the title of Skyfall that was nominated for a Grammy Award for Best Song Written for Visual Media?
+A: First, the title of Skyfall that was nominated for a Grammy Award for Best Song Written for Visual Media is Skyfall. Second, the title of Skyfall is Skyfall. Finally, the answer is: ['Skyfall']

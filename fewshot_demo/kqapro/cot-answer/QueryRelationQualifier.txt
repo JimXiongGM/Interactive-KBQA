@@ -1,0 +1,7 @@
+# ID: train-93543
+Q: What is Joe Morton's role in Ali starring Giancarlo Esposito?
+A: First, Joe Morton's role in the movie Ali is Chauncey Eskridge. Second, Giancarlo Esposito is the actor of the movie Ali. Finally, the answer is: ['Chauncey Eskridge']
+
+# ID: train-41347
+Q: When was Donald Trump (the one whose ISNI is 0000 0001 0898 6765) nominated for Golden Raspberry Award for Worst New Star ?
+A: First, Donald Trump was nominated for Golden Raspberry Award for Worst New Star in 1990. Finally, the answer is: ['1990']

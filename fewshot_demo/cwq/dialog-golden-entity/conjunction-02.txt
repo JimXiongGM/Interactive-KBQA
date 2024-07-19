@@ -1,0 +1,27 @@
+# tok len: 1516
+# ID: WebQTest-415_b6ad66a3f1f515d0688c346e16d202e6
+# What movie with film character named Mr. Woodson did Tupac star in?
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Tupac Shakur"@en .
+#     ?e0 ns:film.actor.film(cvt) ?y . ?y ns:film.performance.film ?x .
+#     ?x ns:film.film.starring(cvt) ?c . ?c ns:film.performance.character ?e1 . ?e1 ns:type.object.name "Mr. Woodson"@en .
+# }
+# ["Gridlock'd"]
+
+Q: What movie with film character named Mr. Woodson did Tupac star in?
+Golden Entity: ['Tupac Shakur', 'Mr. Woodson']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (target movie, film character, Mr. Woodson), (Tupac Shakur, star in a film, target movie). Next, I need to search for a predicate meaning "star in a film" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Tupac Shakur"@en }', semantic="stars in/features in/headlines a film")
+Observation: [("Murder Was the Case", film.film.starring -> film.performance.actor, ?e), ("Notorious", film.film.starring -> film.performance.character, ?e), (?e, film.actor.film -> film.performance.film, "Gridlock'd"), (?e, film.actor.film -> film.performance.character, "Sniper"), ("Biggie & Tupac", film.film.subjects, ?e), (?e, film.person_or_entity_appearing_in_film.films -> film.personal_film_appearance.film, "Hip Hop Story: Tha Movie"), ("Tupac: Resurrection", film.film.music, ?e), (?e, film.film_subject.films, "Biggie & Tupac"), (?e, film.music_contributor.film, "Def Jam's How to Be a Player"), (?e, film.person_or_entity_appearing_in_film.films -> film.personal_film_appearance.type_of_appearance, "Him/Herself")]
+Thought: "film.actor.film -> film.performance.film" is the predicate pair I want. Next, I need to search for a predicate meaning "film character" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Tupac Shakur"@en . ?e0 ns:film.actor.film ?c . ?c ns:film.performance.film ?e . }', semantic="has a character/portrays")
+Observation: [(?e, film.film.starring -> film.performance.character, "Richie"), (?e, film.film.starring -> film.performance.character_note, "segment "Doggy Dogg World""), (?e, film.film.tagline, "A Street Romance."), (?e, film.film.story_by, "Benny Medina"), ("Fab Five Freddy", film.director.film, ?e), (?e, film.film.film_casting_director, "Ellyn Long Marshall"), (?e, film.film.genre, "Thriller"), (?e, film.film.country, "United States of America"), (?e, film.film.cinematography, "Peter Lyons Collister"), (?e, film.film.subjects, "Basketball")]
+Thought: "film.film.starring -> film.performance.character" is the predicate pair I want. Next, I need to enumerate all the characters and find the one meaning "Mr. Woodson".
+Action: ExecuteSPARQL('SELECT ?x { ?e0 ns:type.object.name "Tupac Shakur"@en . ?e0 ns:film.actor.film ?y . ?y ns:film.performance.film ?e . ?e ns:film.film.starring ?c . ?c ns:film.performance.character ?x . ?x ns:type.object.name ?xn . FILTER(REGEX(?xn, "Woodson", "i")) }')
+Observation: ['Mr. Woodson']
+Thought: "Mr. Woodson" is the character node I want. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Tupac Shakur"@en . ?e0 ns:film.actor.film ?y . ?y ns:film.performance.film ?x . ?x ns:film.film.starring ?c . ?c ns:film.performance.character ?e1 . ?e1 ns:type.object.name "Mr. Woodson"@en . }')
+Observation: ["Gridlock'd"]
+Thought: The observation is the answer I want.
+Action: Done.

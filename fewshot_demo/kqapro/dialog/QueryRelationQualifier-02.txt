@@ -1,0 +1,29 @@
+# tok len: 1405
+# ID: train-41347
+# SPARQL: SELECT DISTINCT ?qpv WHERE { ?e1 <pred:name> "Donald Trump" . ?e1 <ISNI> ?pv . ?pv <pred:value> "0000 0001 0898 6765" . ?e2 <pred:name> "Golden Raspberry Award for Worst New Star" . ?e1 <nominated_for> ?e2 . [ <pred:fact_h> ?e1 ; <pred:fact_r> <nominated_for> ; <pred:fact_t> ?e2 ] <point_in_time> ?qpv . }
+# "answer": "1990",
+# "question": "When was Donald Trump (the one whose ISNI is 0000 0001 0898 6765) nominated for Golden Raspberry Award for Worst New Star ?",
+# "sparql_complexity": 2,
+# "qtype": "QueryRelationQualifier"
+
+Q: When was Donald Trump (the one whose ISNI is 0000 0001 0898 6765) nominated for Golden Raspberry Award for Worst New Star ?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Donald Trump, ISNI, 0000 0001 0898 6765), (Donald Trump, nominate for, Golden Raspberry Award for Worst New Star), (nominate for, happening time, target value). Next, I need to search for a node about "Donald Trump".
+Action: SearchNodes("Donald Trump")
+Observation: ['Donald Trump | entity', 'President of the United States | entity', 'Joe Biden | entity', 'Donald Fagen | entity', 'Bill Clinton | entity', 'Hillary Clinton | entity', 'Barack Obama | entity', 'Donald M. Payne | entity', 'Michael Palin | entity', 'John McCain | entity']
+Thought: "Donald Trump" is the entity I need. Next, I need to search for a predicate meaning "ISNI" in the sub-graph of the entity "Donald Trump".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Donald Trump" . }', semantic="ISNI")
+Observation: ['?e <ISNI> ?pv . ?pv <pred:value> "0000 0000 5429 7568" .', '?e <Libris-URI> ?pv . ?pv <pred:value> "sq47b3tb0qfmqbh" .', '?e <Munzinger_IBA> ?pv . ?pv <pred:value> "00000019560" .', '?e <nickname> ?pv . ?pv <pred:value> "Skip" .', '?e <official_website> ?pv . ?pv <pred:value> "https://www.donaldjtrump.com/" .', '?e <employer> ?t . ?t <pred:name> "Duke University" .', '?e <pseudonym> ?pv . ?pv <pred:value> "John Barron" .', '?e <birth_name> ?pv . ?pv <pred:value> "Donald Lynn Trump" .', '?e <occupation> ?t . ?t <pred:name> "entrepreneur" .', '?e <ethnic_group> ?t . ?t <pred:name> "German Americans" .']
+Thought: '?e <ISNI> ?pv . ?pv <pred:value> "0000 0001 0898 6765" .' is the pattern I need. Next, I need to search for a predicate meaning "nominate for" in the sub-graph of the entity "Donald Trump".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Donald Trump" . }', semantic="nominate for/award")
+Observation: ['?e <nominated_for> ?t . ?t <pred:name> "Nobel Peace Prize" .', '?h <officeholder> ?e . ?e <pred:name> "President of the United States" .', '?e <member_of_political_party> ?t . ?t <pred:name> "Republican Party" .', '?e <award_received> ?t . ?t <pred:name> "Golden Raspberry Award for Worst Supporting Actor" .', '?e <nickname> ?pv . ?pv <pred:value> "Skip" .', '?e <occupation> ?t . ?t <pred:name> "entrepreneur" .', '?e <employer> ?t . ?t <pred:name> "Duke University" .', '?e <position_held> ?t . ?t <pred:name> "President of the United States" .', '?e <educated_at> ?t . ?t <pred:name> "Fordham University" .', '?h <head_of_state> ?e . ?e <pred:name> "United States of America" .']
+Thought: <nominated_for> is the predicate I need. Next, I need to search for a node about "Golden Raspberry Award for Worst New Star".
+Action: SearchNodes("Golden Raspberry Award for Worst New Star")
+Observation: ['Golden Raspberry Award for Worst New Star | entity', 'Golden Raspberry Award for Worst Actress | entity', 'Golden Raspberry Award for Worst Actor | entity', 'Golden Raspberry Award for Worst Supporting Actress | entity', 'Golden Raspberry Award for Worst Supporting Actor | entity', 'Golden Raspberry Award for Worst Picture | entity', 'Golden Raspberry Award for Worst Director | entity', 'Golden Raspberry Award for Worst Prequel, Remake, Rip-off or Sequel | entity', 'Golden Raspberry Award for Worst Screenplay | entity', 'Golden Raspberry Award for Worst Screen Couple/Ensemble | entity']
+Thought: "Golden Raspberry Award for Worst New Star" is the entity I need. The question ask for the time for the nomination, so I need to enumerate all the modifiers of the predicate <nominated_for>.
+Action: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?t) AS ?t) WHERE { ?e <pred:name> "Donald Trump" . ?e <nominated_for> ?e1 . ?e1 <pred:name> "Golden Raspberry Award for Worst New Star" . [ <pred:fact_h> ?e ; <pred:fact_r> <nominated_for> ; <pred:fact_t> ?e1 ] ?p ?t . }')
+Observation: [('pred:fact_r', 'nominated_for'), ('point_in_time', '1990'), ('pred:fact_h', 'Donald Trump'), ('pred:fact_t', 'Golden Raspberry Award for Worst New Star'), ('for_work', "Ghosts Can't Do It")]
+Thought: <point_in_time> is the modifier I need. Next, I need to find the value of the variable ?t.
+Action: ExecuteSPARQL('SELECT DISTINCT ?t WHERE { ?e <pred:name> "Donald Trump" . ?e <nominated_for> ?e1 . ?e1 <pred:name> "Golden Raspberry Award for Worst New Star" . [ <pred:fact_h> ?e ; <pred:fact_r> <nominated_for> ; <pred:fact_t> ?e1 ] <point_in_time> ?t . }')
+Observation: ['1990']
+Thought: The observation is the answer I want.
+Action: Done.

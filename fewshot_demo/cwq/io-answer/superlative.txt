@@ -1,0 +1,7 @@
+# WebQTrn-2678_93995ecbdd166fc16365a56ed489eec0
+Q: What zoo that opened earliest is there to see in Dallas, TX?
+A: The answer is: ['Dallas Zoo']
+
+# WebQTrn-1519_a7e9c06267e287818efb1c2c3a6720fd
+Q: What pro athlete who started his career latest was a Falcons 2012 quarterback?
+A: The answer is: ['Matt Ryan']

@@ -1,0 +1,38 @@
+# v1.0 合并 tool description 和 KG scheme; add fact_h support. token len: 1396
+# v2.0 tool返回结果不使用json，直接str
+# v3.0 更新tool remove SELECT ?p; add node desc; 完全更新desc
+When presented with a question, you need to employ specific tools to interact with a locally deployed knowledge graph and craft a SPARQL query to retrieve the answer. The following document includes descriptions of the tools and some essential graph patterns (KG schema).
+
+1. SearchNodes(query)
+Description: Searches for nodes in the knowledge graph based on the surface name. There are two types of nodes: entities and concepts. You are suppose to use "xxx" or "xxx" to search for the nodes.
+Example 1: To find "obama": SearchNodes("obama") will return: ['Barack Obama | an entity', ...]. If the entity "Barack Obama" is your target node, the SPARQL query should be: SELECT ?e WHERE { ?e <pred:name> "Barack Obama" . }. 
+Example 2: If you want to identify nodes associated with the concept name "visual art", initiate the search: SearchNodes("visual art") will return: ['visual artwork | a concept', ...]. If the concept "visual artwork" is your target node, the SPARQL should be: SELECT ?e WHERE { ?e <pred:instance_of> ?c . ?c <pred:name> "visual artwork" . }.
+
+2. ExecuteSPARQL(sparql)
+Description: Executes a SPARQL query. You can explore the KG freely using this tool.
+Example 1: To verify whether the birthdate of "Barack Obama" is Aug 4, 1961 or not, simply use: ExecuteSPARQL('ASK { ?e <pred:name> "Barack Obama". ?e <date_of_birth> ?pv . ?pv <pred:date> "1961-08-04"^^xsd:date . }').
+Example 2: Similar to Wikidata, this KG uses predicate modifiers to provide additional information. If you want to query the population of New York City in 2010, suppose you have obtained this graph pattern: "?e <pred:name> "New York City" . ?e <population> ?pv. ?pv <pred:value> ?v .", then, you need to enumerate the modifiers of <population>: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?t) AS ?t) WHERE { ?e <pred:name> "New York City" . ?e <population> ?pv . [ <pred:fact_h> ?e ; <pred:fact_r> <population> ; <pred:fact_t> ?pv ] ?p ?t . }'), it will return: [('editor', 'United States Census Bureau'), ('point_in_time', '"1698-01-01"^^xsd:date'), ...], now, you can use the modifier <point_in_time> to craft the final SPARQL.
+Example 3: If you want to identify a node with a predicate and a value, you can use the tool: ExecuteSPARQL('SELECT DISTINCT ?e WHERE { ?e <ISNI> ?pv . ?pv <pred:value> "0000 0001 0938 7748" . }')
+
+3. SearchGraphPatterns(sparql, semantic)
+Description: The parameter sparql MUST start with "SELECT ?e WHERE". The tool will query the subgraphs with ?e as the head or tail entities, respectively, and return them together. The semantic parameter indicates the expected predicate semantics. If provided, the tool will sort the queried subgraphs by semantics. If not, the tool returns the entire subgraph. Note! This tool will return a randomly instantiated triple; you should pay attention to the semantics of the predicate, not the specific names of the head entity or the tail entity. You can write down more than one synonyms to the `semantic` parameter if necessary.
+Example 1: If you want to get the birthdate of "Barack Obama", just: SearchGraphPatterns("SELECT ?e WHERE { ?e <pred:name> 'Barack Obama' . }", semantic="birthdate"), it will return: [..., '?e <date_of_birth> ?pv . ?pv <pred:date> "1961-08-04"^^xsd:date .', ...].
+Example 2: If you just want to find one that represents "website" among all the predicates: SearchGraphPatterns("SELECT ?e WHERE {}", semantic="website"), it will return: ['<official_website>', ...].
+
+Here are some patterns of typed literals:
+Finding a date or year:
+- ?e <start_time> ?pv . ?pv <pred:date> "1992-08-15"^^xsd:date .
+- ?e <start_time> ?pv . ?pv <pred:year> 1992 .
+Finding a number in a certain unit of measurement:
+- metre: ?e <elevation_above_sea_level> ?pv . ?pv <pred:value> "7.0"^^xsd:double . ?pv <pred:unit> "metre" .
+- foot: ?e <elevation_above_sea_level> ?pv . ?pv <pred:value> "7"^^xsd:double . ?pv <pred:unit> "foot" .
+And so on.
+
+Remember:
+`Action:` must be provided in every round of conversation, and must be one of [SearchNodes, SearchGraphPatterns, ExecuteSPARQL, Done].
+ALWAYS construct the complete SPARQL query and use `Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE ...` to execute!
+Do not fabricate predicates! Information must be obtained from observation.
+The final answer should be a list with length 1, or a boolean value.
+Follow the demos' format strictly!
+
+Now, Think and solve the following complex questions step by step:

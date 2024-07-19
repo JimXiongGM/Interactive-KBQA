@@ -1,0 +1,26 @@
+# tok len: 1547
+# ID: train-1249
+# SPARQL: SELECT ?e WHERE { { ?e <pred:name> "Morocco" . ?e <total_fertility_rate> ?pv1 . ?pv1 <pred:unit> "1" . ?pv1 <pred:value> "2.611"^^xsd:double . } UNION { ?e <pred:name> "Liberia" . } ?e <PPP_GDP_per_capita> ?pv . ?pv <pred:value> ?v . } ORDER BY ?v LIMIT 1
+# "answer": "Liberia",
+# "question": "Which place has a lower PPP GDP per capita, Morocco with a fertility rate of 2.611, or Liberia?",
+# "sparql_complexity": 3,
+# "qtype": "SelectBetween"
+
+Q: Which place has a lower PPP GDP per capita, Morocco with a fertility rate of 2.611, or Liberia?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Morocco, PPP GDP per capita, ?v1), (Morocco, fertility rate, 2.611), (Liberia, PPP GDP per capita, ?v2), (compare, ?v1, ?v2). Next, I need to search for a node about "Morocco".
+Action: SearchNodes("Morocco")
+Observation: ['Morocco | entity', 'Marrakesh | entity', 'Rabat | entity', 'Morocco national football team | entity', 'Mauritania | entity', 'Algeria | entity', 'North Africa | entity', 'Tunisia | entity', 'Mozambique | entity', 'Senegal | entity']
+Thought: "Morocco" is the entity I need. Next, I need to search for a predicate meaning "fertility rate" in the sub-graph of the entity "Morocco".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Morocco". }', semantic="fertility rate/birth rate")
+Observation: ['?e <total_fertility_rate> ?pv . ?pv <pred:value> "2.506"^^xsd:double . ?pv <pred:unit> "1" .', '?e <unemployment_rate> ?pv . ?pv <pred:value> "10.0"^^xsd:double . ?pv <pred:unit> "percentage" .', '?e <population> ?pv . ?pv <pred:value> "1.76853e+07"^^xsd:double . ?pv <pred:unit> "1" .', '?e <life_expectancy> ?pv . ?pv <pred:value> "68.284"^^xsd:double . ?pv <pred:unit> "year" .', '?e <inflation_rate> ?pv . ?pv <pred:value> "6.7"^^xsd:double . ?pv <pred:unit> "percentage" .', '?e <Human_Development_Index> ?pv . ?pv <pred:value> "0.528"^^xsd:double . ?pv <pred:unit> "1" .', '?e <retirement_age> ?pv . ?pv <pred:value> "65.0"^^xsd:double . ?pv <pred:unit> "years old" .', '?e <number_of_out-of-school_children> ?pv . ?pv <pred:value> "1.86046e+06"^^xsd:double . ?pv <pred:unit> "1" .', '?e <marriageable_age> ?pv . ?pv <pred:value> "18.0"^^xsd:double . ?pv <pred:unit> "years old" .', '?e <nominal_GDP_per_capita> ?pv . ?pv <pred:value> "2878.2"^^xsd:double . ?pv <pred:unit> "United States dollar" .']
+Thought: <total_fertility_rate> is the predicate I need. Next, I need to search for a predicate meaning "PPP GDP per capita" in the sub-graph of the entity "Morocco".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Morocco". }', semantic="PPP GDP per capita")
+Observation: ['?e <PPP_GDP_per_capita> ?pv . ?pv <pred:value> "7491.0"^^xsd:double . ?pv <pred:unit> "Geary–Khamis dollar" .', '?e <nominal_GDP_per_capita> ?pv . ?pv <pred:value> "2878.2"^^xsd:double . ?pv <pred:unit> "United States dollar" .', '?e <GDP_(PPP)> ?pv . ?pv <pred:value> "2.7406e+11"^^xsd:double . ?pv <pred:unit> "Geary–Khamis dollar" .', '?e <nominal_GDP> ?pv . ?pv <pred:value> "2.8764e+09"^^xsd:double . ?pv <pred:unit> "United States dollar" .', '?e <real_gross_domestic_product_growth_rate> ?pv . ?pv <pred:value> "1.5"^^xsd:double . ?pv <pred:unit> "percentage" .', '?e <vehicles_per_capita_(1000)> ?pv . ?pv <pred:value> "53.0"^^xsd:double . ?pv <pred:unit> "1" .', '?e <Human_Development_Index> ?pv . ?pv <pred:value> "0.528"^^xsd:double . ?pv <pred:unit> "1" .', '?e <population> ?pv . ?pv <pred:value> "1.76853e+07"^^xsd:double . ?pv <pred:unit> "1" .', '?e <inflation_rate> ?pv . ?pv <pred:value> "6.7"^^xsd:double . ?pv <pred:unit> "percentage" .', '?e <unemployment_rate> ?pv . ?pv <pred:value> "10.0"^^xsd:double . ?pv <pred:unit> "percentage" .']
+Thought: <PPP_GDP_per_capita> is the predicate I need. Next, I need to search for a node about "Liberia".
+Action: SearchNodes("Liberia")
+Observation: ['Liberia | entity', 'Sierra Leone | entity', 'Libya | entity', 'Gambia | entity', 'Senegal | entity', 'Monrovia | entity', 'Guinea-Bissau | entity', 'Ghana | entity', 'Burkina Faso | entity', 'Guinea | entity']
+Thought: "Liberia" is the entity I need. According to the semantic of the question, I guess "Liberia" also has a predicate <PPP_GDP_per_capita>. Now, I have all the information I need. It seems to be a union-type question. I should query the common predicate <PPP_GDP_per_capita> of the entities. I can construct the SPARQL query. 
+Action: ExecuteSPARQL('SELECT ?e WHERE { { ?e <pred:name> "Morocco" . ?e <total_fertility_rate> ?rate . ?rate <pred:value> "2.611"^^xsd:double . } UNION { ?e <pred:name> "Liberia" . } ?e <PPP_GDP_per_capita> ?ppp . ?ppp <pred:value> ?ppp_value . } ORDER BY ASC(?ppp_value) LIMIT 1')
+Observation: ['Liberia']
+Thought: The observation is the answer I want.
+Action: Done.

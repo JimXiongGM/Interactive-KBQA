@@ -1,0 +1,33 @@
+# tok len: 1883
+# ID: WebQTrn-411_a9b18d079f29555cbd1e1740c7d6e40e
+# What was the first president of the country that has Karanodar Krai?
+# PREFIX ns: <http://rdf.freebase.com/ns/>
+# SELECT DISTINCT ?x WHERE {
+#     ?e0 ns:type.object.name "Krasnodar Krai"@en .
+#     ?country ns:location.country.administrative_divisions ?e0 .
+#     ?country ns:government.governmental_jurisdiction.governing_officials ?c .
+#     ?c ns:government.government_position_held.office_holder ?x .
+#     ?c ns:government.government_position_held.basic_title ?e1 .
+#     ?e1 ns:type.object.name "President"@en .
+#     ?c ns:government.government_position_held.from ?sk0 .
+# }
+# ORDER BY xsd:datetime(?sk0)
+# LIMIT 1
+# ['Boris Yeltsin']
+
+Q: What was the first president of the country that has Karanodar Krai?
+Golden Entity: ['Krasnodar Krai', 'President']
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (a country, has, Karanodar Krai), (a country, has a president, target people). Next, I need to search for a predicate meaning "a country has a region" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e ns:type.object.name "Krasnodar Krai"@en }', semantic="a country has/encompasses/includes/contains a region")
+Observation: [("Russia", location.country.administrative_divisions, ?e), (?e, location.administrative_division.country, "Russia"), (?e, location.location.area, "76000.0"^^xsd:float), ("Olimpiada Ivanova", olympics.olympic_athlete.country -> location.location.contains, ?e), ("Oleg Deripaska", people.person.places_lived -> people.place_lived.location, ?e), ("Olimpiada Ivanova", olympics.olympic_athlete.country -> location.country.administrative_divisions, ?e), ("Kurds in Russia", people.ethnicity.geographic_distribution, ?e), (?e, location.administrative_division.fips_10_4_region_code, "RS38"), ("Kuban State University", organization.organization.headquarters -> location.mailing_address.state_province_region, ?e), (?e, location.statistical_region.population -> measurement_unit.dated_integer.year, "2012"^^xsd:gYear)]
+Thought: "location.country.administrative_divisions" is the predicate I want. Next, I need to search for a predicate meaning "president of a country" in the sub-graph.
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Krasnodar Krai"@en . ?e ns:location.country.administrative_divisions ?e0 . }', semantic="president/governor/chairman of a country")
+Observation: [("Constitutional republic", government.form_of_government.countries, ?e), (?e, location.country.form_of_government, "Constitutional republic"), ("Leonid Lebedev", government.politician.government_positions_held -> government.government_position_held.jurisdiction_of_office, ?e), ("House of Romanov", people.family.country, ?e), ("Dmitry Medvedev", government.political_appointer.appointees -> government.government_position_held.jurisdiction_of_office, ?e), (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.office_holder, "Leonid Lebedev"), (?e, government.governmental_jurisdiction.government_positions, "President of Russia"), ("Councillor", government.government_office_category.officeholders -> government.government_position_held.jurisdiction_of_office, ?e), (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.office_position_or_title, "Prosecutor General of Russia"), (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.appointed_by, "Dmitry Medvedev")]
+Thought: "government.governmental_jurisdiction.governing_officials -> government.government_position_held.office_holder" is the predicate meaning "the people who hold the office". Next, I need to find a predicate meaning "the position title".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e0 ns:type.object.name "Krasnodar Krai"@en . ?e ns:location.country.administrative_divisions ?e0 . ?e ns:government.governmental_jurisdiction.governing_officials ?c . ?c ns:government.government_position_held.office_holder ?e1 . }', semantic="position title")
+Observation: [("Boris Yeltsin", government.politician.government_positions_held -> government.government_position_held.jurisdiction_of_office, ?e), (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.office_position_or_title, "President of Russia"), (?e, government.governmental_jurisdiction.government_positions, "President of Russia"), ("President of Russia", government.government_office_or_title.jurisdiction, ?e), (?e, location.location.area, "1.70982e+07"^^xsd:float), ("Acting Chairman of the Government of the Russian Federation", government.government_office_or_title.office_holders -> government.government_position_held.jurisdiction_of_office, ?e), (?e, government.governmental_jurisdiction.governing_officials -> government.government_position_held.basic_title, "Acting President"), (?e, location.location.adjectival_form, "Russian"), (?e, location.location.time_zones, "Yekaterinburg Time Zone"), (?e, location.location.contains, "Tula")]
+Thought: "government.governmental_jurisdiction.governing_officials -> government.government_position_held.office_position_or_title" is the predicate I want. Now, I have all the information I need. According to the Freebase schema, I need to add ".from" and ".to" to the predicate "government.government_position_held" to specify the time. Now, I have all the information I need. I can construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name "Krasnodar Krai"@en . ?e ns:location.country.administrative_divisions ?e0 . ?e ns:government.governmental_jurisdiction.governing_officials ?c . ?c ns:government.government_position_held.office_holder ?x . ?c ns:government.government_position_held.office_position_or_title ?title . ?title ns:type.object.name "President of Russia"@en . ?c ns:government.government_position_held.from ?from . } ORDER BY xsd:datetime(?from) LIMIT 1')
+Observation: ['Boris Yeltsin']
+Thought: The observation is the answer I want.
+Action: Done.

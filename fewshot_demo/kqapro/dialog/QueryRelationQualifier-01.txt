@@ -1,0 +1,37 @@
+# tok len: 1475
+# ID: train-93543
+# SPARQL: SELECT DISTINCT ?qpv WHERE { ?e1 <pred:name> "Ali" . ?e1 <cast_member> ?e3 . ?e3 <pred:name> "Giancarlo Esposito" . ?e2 <pred:name> "Joe Morton" . ?e1 <cast_member> ?e2 . [ <pred:fact_h> ?e1 ; <pred:fact_r> <cast_member> ; <pred:fact_t> ?e2 ] <character_role> ?qpv . }",
+# "answer": "Chauncey Eskridge",
+# "question": "What is Joe Morton's role in Ali starring Giancarlo Esposito?",
+# "sparql_complexity": 2,
+# "qtype": "QueryRelationQualifier"
+#  Ali --cast_member--> Giancarlo Esposito; Ali --cast_member--> Joe Morton; 
+#  event: (Ali --cast_member--> Joe Morton) --character_role--> Chauncey Eskridge
+
+Q: What is Joe Morton's role in Ali starring Giancarlo Esposito?
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (Joe Morton, play a role in, Ali), (Ali, star, Giancarlo Esposito), (Joe Morton, play, ?role). Next, I need to search nodes about "Joe Morton", "Ali" and "Giancarlo Esposito" respectively.
+Action: SearchNodes("Joe Morton")
+Observation: ['Joe Morton | entity', 'James Mason | entity', 'Jonathan Murray | entity', 'Joe Jackson | entity', 'Jack Thompson | entity', 'Peter Horton | entity', 'Jack Huston | entity', 'Jon Peters | entity', 'Albert Jarrett | entity', 'Jack Kemp | entity']
+Thought: "Joe Morton" is the entity I need. Next, I need to search for a node about "Ali".
+Action: SearchNodes("Ali")
+Observation: ['Ali | entity', 'Alice | entity', 'Alexander | entity', 'Alias | entity', 'Laura | entity', 'Emma | entity', 'Iran | entity', 'Paul | entity', 'Islam | concept', 'Elizabeth | entity']
+Thought: "Ali" is the entity I need. Next, I need to search for a node about "Giancarlo Esposito".
+Action: SearchNodes("Giancarlo Esposito")
+Observation: ['Giancarlo Esposito | entity', 'Jennifer Esposito | entity', 'Emilio Estevez | entity', 'Jorge Garcia | entity', 'James Gandolfini | entity', 'Carla Gugino | entity', 'Zachary Quinto | entity', 'Danny Trejo | entity', 'Carmine Coppola | entity', 'Benicio del Toro | entity']
+Thought: "Giancarlo Esposito" is the entity I need. This question asks about the relationship between the movie Ali and the two actors, so I need to find a subgraph centered on Ali. Next, I need to search for a predicate meaning "include actors" (the inverse relationship of "play a role in") in the sub-graph of the concept "Ali".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Ali" . }', semantic="include actors/has actors")
+Observation: ['?e <cast_member> ?t . ?t <pred:name> "Mario Van Peebles" .', '?h <cast_member> ?e . ?e <pred:name> "Super" .', '?e <producer> ?t . ?t <pred:name> "Jon Peters" .', '?e <screenwriter> ?t . ?t <pred:name> "Michael Mann" .', '?e <production_company> ?t . ?t <pred:name> "Columbia Pictures" .', '?e <director> ?t . ?t <pred:name> "Michael Mann" .', '?e <composer> ?t . ?t <pred:name> "Lisa Gerrard" .', '?e <main_subject> ?t . ?t <pred:name> "boxing" .', '?e <genre> ?t . ?t <pred:name> "hip hop music" .', '?e <occupation> ?t . ?t <pred:name> "actor" .']
+Thought: "?e <cast_member> ?e1" is the pattern I need. Maybe "Joe Morton" and "Giancarlo Esposito" are both cast members of the movie Ali; I need to check it.
+Action: ExecuteSPARQL('ASK { ?e <pred:name> "Ali" . ?e <cast_member> ?e1 . ?e1 <pred:name> "Joe Morton" . ?e <cast_member> ?e2 . ?e2 <pred:name> "Giancarlo Esposito" . }')
+Observation: True
+Thought: "Joe Morton" and "Giancarlo Esposito" are cast members of the movie Ali. Next, I need to find the character role of "Joe Morton".
+Action: SearchGraphPatterns('SELECT ?e WHERE { ?e <pred:name> "Joe Morton" . }', semantic="character role/play role")
+Observation: ['?h <cast_member> ?e . ?e <pred:name> "Another World" .', '?e <occupation> ?t . ?t <pred:name> "actor" .', '?e <ethnic_group> ?t . ?t <pred:name> "African Americans" .', '?e <Twitter_username> ?pv . ?pv <pred:value> "JOEtheMORTON" .', '?e <place_of_birth> ?t . ?t <pred:name> "The Bronx" .', '?e <nominated_for> ?t . ?t <pred:name> "Tony Award for Best Actor in a Musical" .', '?e <educated_at> ?t . ?t <pred:name> "Hofstra University" .', '?e <ISNI> ?pv . ?pv <pred:value> "0000 0000 7975 0453" .', '?e <country_of_citizenship> ?t . ?t <pred:name> "United States of America" .', '?e <pred:name> "Joe Morton" .']
+Thought: There is no pattern about "character role" in the sub-graph of "Joe Morton". Maybe "character role" modifies the predicate <cast_member>. Next, I need to enumerate all the modifiers of the predicate <cast_member>.
+Action: ExecuteSPARQL('SELECT DISTINCT ?p (SAMPLE(?t) AS ?t) WHERE { ?e <pred:name> "Ali" . ?e <cast_member> ?e1 . ?e1 <pred:name> "Giancarlo Esposito" . ?e <cast_member> ?e2 . ?e2 <pred:name> "Joe Morton" . [ <pred:fact_h> ?e ; <pred:fact_r> <cast_member> ; <pred:fact_t> ?e2 ] ?p ?t . }')
+Observation: [('pred:fact_r', 'cast_member'), ('pred:fact_h', 'Ali'), ('pred:fact_t', 'Joe Morton'), ('character_role', 'Chauncey Eskridge')]
+Thought: <character_role> is the modifier I need. Next, I need to find the value of the variable ?t.
+Action: ExecuteSPARQL('SELECT DISTINCT ?t WHERE { ?e <pred:name> "Ali" . ?e <cast_member> ?e1 . ?e1 <pred:name> "Giancarlo Esposito" . ?e <cast_member> ?e2 . ?e2 <pred:name> "Joe Morton" . [ <pred:fact_h> ?e ; <pred:fact_r> <cast_member> ; <pred:fact_t> ?e2 ] <character_role> ?t . }')
+Observation: ['Chauncey Eskridge']
+Thought: The observation is the answer I want.
+Action: Done.

@@ -1,0 +1,13 @@
+# tok len: 457
+# ID: the films that share actors with the film [Dil Chahta Hai] were released in which years	1997|1998|2003|2001|2006|2004|2005|2014|2008|2009|2010|2012
+# movie_to_actor_to_movie_to_year
+# 'SELECT DISTINCT ?x WHERE { ?e0 <name> "Dil Chahta Hai" . ?e0 <starred_actors> ?c . ?e <starred_actors> ?c . ?e <release_year> ?x . }'
+Q: the films that share actors with the film Dil Chahta Hai were released in which years
+Thought: Let's first decouple this complex problem into several simple sub-problem triples: (some movies, has actor, Dil Chahta Hai), (some movies, were released in, target years). Next, I need to search for a node meaning "Dil Chahta Hai".
+Action: SearchNodes("Dil Chahta Hai")
+Observation: ['"Dil Chahta Hai" | A movie node', '"Dil Se.." | A movie node', '"Zafar Hai" | A person node', '"Hair" | A movie node', '"hair" | A tag', '"Yeh Jawaani Hai Deewani" | A movie node', '"Kaho Naa... Pyaar Hai" | A movie node', '"Do Thi Hai Yen" | A person node', '"Kuch Kuch Hota Hai" | A movie node', '"Corey Haim" | A person node']
+Thought: "Dil Chahta Hai" is the movie I want. Next, according to the KG schema, starred_actors means "has actor", and release_year means "were released in". Now I can try to construct the SPARQL query.
+Action: ExecuteSPARQL('SELECT DISTINCT ?x WHERE { ?e0 <name> "Dil Chahta Hai" . ?e0 <starred_actors> ?actor . ?movie <starred_actors> ?actor . ?movie <release_year> ?x . FILTER (?movie != ?e0) }')
+Observation: ['"1997"^^xsd:gYear', '"1998"^^xsd:gYear', '"2001"^^xsd:gYear', '"2003"^^xsd:gYear', '"2004"^^xsd:gYear', '"2005"^^xsd:gYear', '"2006"^^xsd:gYear', '"2008"^^xsd:gYear', '"2009"^^xsd:gYear', '"2010"^^xsd:gYear', '"2012"^^xsd:gYear', '"2014"^^xsd:gYear']
+Thought: The observation is the answer I want.
+Action: Done.

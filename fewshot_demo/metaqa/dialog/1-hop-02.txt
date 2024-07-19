@@ -1,0 +1,13 @@
+# tok len: 281
+# ID: what movies are about [ginger rogers]	Top Hat|Kitty Foyle|The Barkleys of Broadway
+# tag_to_movie
+# SELECT ?e WHERE { ?e <has_tags> "ginger rogers" . }
+Q: what movies are about ginger rogers
+Thought: Let's first decouple this problem into: (ginger rogers, about, target movies). Next, I need to search for a node meaning "ginger rogers".
+Action: SearchNodes("ginger rogers")
+Observation: ['"ginger rogers" | A tag', '"Ginger Rogers" | A person node', '"Ginger Snaps" | A movie node', '"Ginger and Fred" | A movie node', '"Kenny Rogers" | A person node', '"Alva Rogers" | A person node', '"Roy Rogers" | A person node', '"Mimi Rogers" | A person node', '"Will Rogers" | A person node', '"Jean Rogers" | A person node']
+Thought: "ginger rogers" and "Ginger Rogers" are both relevent, but the question asks for movies about "ginger rogers", so the tag "ginger rogers" is the one I want. Now, I have all the information I need.
+Action: ExecuteSPARQL('SELECT DISTINCT ?movie WHERE { ?movie <has_tags> "ginger rogers" . }')
+Observation: ['Kitty Foyle', 'The Barkleys of Broadway', 'Top Hat']
+Thought: The observation is the answer I want.
+Action: Done.
