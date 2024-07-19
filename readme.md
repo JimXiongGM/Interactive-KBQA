@@ -49,7 +49,7 @@ python classifier/bert_for_cwq_infer.py
 python classifier/bert_for_kqapro_infer.py
 ```
 
-You will observe the following output folders for model weights (or you can unzip the uploaded model to the same directory):
+You will observe the following output folders for model weights:
 ```
 result-cwq-classification/best_model
 result-kqapro-classification/best_model
