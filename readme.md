@@ -4,7 +4,7 @@ This repository contains the official code for ACL 2024 paper "Interactive-KBQA:
 
 <div align="center">
 
-[![ACL Anthology](https://img.shields.io/badge/ACL%20Anthology-TBC-lightgrey)](TBC)
+[![ACL Anthology](https://img.shields.io/badge/ACL%20Anthology-TBC-lightgrey)](https://aclanthology.org/2024.acl-long.569)
 [![OpenReview](https://img.shields.io/badge/OpenReview-TBC-lightgrey)](TBC)
 [![Arxiv](https://img.shields.io/badge/Arxiv-2402.15131-blue)](https://arxiv.org/abs/2402.15131)
 
@@ -176,13 +176,20 @@ python llm_infer_baseline_dialog_ablation.py --dataset=kqapro --model_name=gpt-4
 If you find this project helpful, please cite our paper. ;-)
 
 ```bibtex
-@misc{xiong_2024_interactivekbqa,
-      title={Interactive-KBQA: Multi-Turn Interactions for Knowledge Base Question Answering with Large Language Models}, 
-      author={Guanming Xiong and Junwei Bao and Wen Zhao},
-      year={2024},
-      eprint={2402.15131},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2402.15131}, 
+@inproceedings{xiong-etal-2024-interactive,
+    title = "Interactive-{KBQA}: Multi-Turn Interactions for Knowledge Base Question Answering with Large Language Models",
+    author = "Xiong, Guanming  and
+      Bao, Junwei  and
+      Zhao, Wen",
+    editor = "Ku, Lun-Wei  and
+      Martins, Andre  and
+      Srikumar, Vivek",
+    booktitle = "Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = aug,
+    year = "2024",
+    address = "Bangkok, Thailand",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.acl-long.569",
+    pages = "10561--10582",
 }
 ```
