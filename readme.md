@@ -4,7 +4,7 @@ This repository contains the official code for ACL 2024 paper "Interactive-KBQA:
 
 <div align="center">
 
-[![ACL Anthology](https://img.shields.io/badge/ACL%20Anthology-TBC-lightgrey)](https://aclanthology.org/2024.acl-long.569)
+[![ACL Anthology](https://img.shields.io/badge/ACL%20Anthology-blue)](https://aclanthology.org/2024.acl-long.569)
 [![OpenReview](https://img.shields.io/badge/OpenReview-TBC-lightgrey)](TBC)
 [![Arxiv](https://img.shields.io/badge/Arxiv-2402.15131-blue)](https://arxiv.org/abs/2402.15131)
 
