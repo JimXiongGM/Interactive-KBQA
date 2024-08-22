@@ -99,5 +99,4 @@ async def _get_embedding(
 
 
 if __name__ == "__main__":
-    # test_chatgpt()
-    uvicorn.run("tools.api_db_server:app", host=args.host, port=args.port, workers=8)
+    uvicorn.run("api.api_db_server:app", host=args.host, port=args.port, workers=8)
