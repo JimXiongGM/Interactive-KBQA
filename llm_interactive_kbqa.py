@@ -89,7 +89,7 @@ def run(dataset, model_name, debug=False, case_num=10, qtype=None, entity=None, 
     if qtype is not None:
         assert (
             f"data_preprocess/{dataset}-classification-prediction.json"
-        ), "You need to run question type prediction first."
+        ), "You need to run question type prediction code first."
         predicated_qtype = read_json(f"data_preprocess/{dataset}-classification-prediction.json")
         id_to_pred_qtype = {i["id"]: i["pred_label"] for i in predicated_qtype}
         data = [i for i in data if id_to_pred_qtype[i["id"]] == qtype]
@@ -116,7 +116,7 @@ def run(dataset, model_name, debug=False, case_num=10, qtype=None, entity=None, 
     multi_process(
         items=data,
         process_function=chat_with_LLM,
-        cpu_num=2,  # parallel number. NOTE: it cost money so fast.
+        cpu_num=2,  # parallel number. NOTE: it consumes money so fast.
         debug=debug,
         dummy=True,
         # func params

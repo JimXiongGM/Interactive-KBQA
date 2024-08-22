@@ -311,6 +311,6 @@ def test_actions():
 
 if __name__ == "__main__":
     """
-    python tools/actions_metaqa.py
+    python tool/actions_metaqa.py
     """
     test_actions()

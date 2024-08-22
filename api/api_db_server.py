@@ -11,13 +11,13 @@ from tool.openai_api import get_embedding
 
 """
 kqapro
-python tools/api_db_server.py --db kqapro
+python api/api_db_server.py --db kqapro
 
 fb
-python tools/api_db_server.py --db fb
+python api/api_db_server.py --db fb
 
 metaqa
-python tools/api_db_server.py --db metaqa
+python api/api_db_server.py --db metaqa
 """
 
 argparser = argparse.ArgumentParser()

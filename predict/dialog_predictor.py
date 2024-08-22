@@ -180,7 +180,7 @@ def history_to_input(messages: List[str], desc="short", db="kqapro") -> str:
     return text
 
 
-def predictor_history(model_name_or_path, db=None, use_vllm=False, use_mii=False, infer_mode=None):
+def predictor_history(model_name_or_path, db=None, use_vllm=False, use_mii=False):
     """
     Single turn prediction.
     usage:
@@ -195,7 +195,6 @@ def predictor_history(model_name_or_path, db=None, use_vllm=False, use_mii=False
     if use_vllm and use_mii:
         raise Exception("use_vllm and use_mii cannot be True at the same time")
     FLAG_OPEN_LLM_INFER = False
-    FLAG_FEW_SHOT_INFERENCE = False
 
     for mname in [
         "meta-llama/Llama-2-7b-chat-hf",
@@ -212,12 +211,6 @@ def predictor_history(model_name_or_path, db=None, use_vllm=False, use_mii=False
             logger.warning(f"Load {mname} for direct inference")
             sleep(5)
             break
-
-    if infer_mode:
-        FLAG_FEW_SHOT_INFERENCE = True
-        logger.warning(f"infer_mode: {infer_mode}")
-    else:
-        assert db in ["kqapro", "fb", "metaqa", "common"], "db must be kqapro or fb or metaqa"
 
     tokenizer = load_tokenizer(model_name_or_path, 8192)
 
@@ -276,13 +269,6 @@ def predictor_history(model_name_or_path, db=None, use_vllm=False, use_mii=False
                 conversation=messages, tokenize=True, add_generation_prompt=True
             )
             query = tokenizer.decode(encodeds)
-        elif FLAG_FEW_SHOT_INFERENCE:
-            # we exclude the first system message
-            # require the client add demos in the first message
-            messages = [h["content"] for h in messages if h["role"] != "system"]
-            assert messages[0].count("Q: ") > 1, "demos should be added in the first message:\n" + messages[0]
-            query = history_to_input(messages, desc="short", db=db)
-
         else:
             messages = check_and_format_history(messages)
             query = history_to_input(messages, desc="short", db=db)

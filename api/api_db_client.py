@@ -103,5 +103,5 @@ def test_fb():
 
 
 if __name__ == "__main__":
-    # python tools/api_db_client.py
+    # python api/api_db_client.py
     test_fb()

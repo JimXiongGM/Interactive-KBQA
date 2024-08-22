@@ -1,7 +1,7 @@
 from evaluation.eval_all import evaluation_cwq
 
 """
-PYTHONPATH=./ python scripts/eval_all_cwq.py
+PYTHONPATH=./ python script/eval_all_cwq.py
 
 The path of the prediction files follows a specific pattern, for example:
 ```

@@ -476,6 +476,6 @@ def test_actions():
 
 if __name__ == "__main__":
     """
-    python tools/actions_fb.py
+    python tool/actions_fb.py
     """
     test_actions()

@@ -307,6 +307,6 @@ def test_actions():
 
 if __name__ == "__main__":
     """
-    python tools/actions_kqapro.py
+    python tool/actions_kqapro.py
     """
     test_actions()

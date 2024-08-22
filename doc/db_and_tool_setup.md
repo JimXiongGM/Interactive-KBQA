@@ -191,7 +191,7 @@ First, you need to start the Virtuoso database.
 
 2. Index entity names by ElasticSearch.
 
-- Run `python tools/searchnode_fb.py`. If everything goes smoothly, you should see the following output:
+- Run `python tool/searchnode_fb.py`. If everything goes smoothly, you should see the following output:
     ```python
     ['Southern Peninsula', 'The Southern Arabian Peninsula', 'Southern Peninsular Malaysian Hokkien', 'Southern Yorke Peninsula Christian College', 'Peninsula']
     {'count': 22767150, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}}
@@ -210,7 +210,7 @@ First, you need to start the Virtuoso database.
 
 4. Check the tools
 
-- Run `python tools/actions_fb.py`. If everything goes smoothly, you should see the following output:
+- Run `python tool/actions_fb.py`. If everything goes smoothly, you should see the following output:
     ```
     Connected to Freebase successfully.
     Loaded 0 timeout queries.
@@ -247,7 +247,7 @@ First, you need to start the Virtuoso database.
 
 3. Check the tools
 
-- Run `python tools/actions_kqapro.py`. If everything goes smoothly, you should see the following output:
+- Run `python tool/actions_kqapro.py`. If everything goes smoothly, you should see the following output:
     ```
     Connected to Wikidata successfully.
     ['metropolitan borough | concept', 'Manchester Metropolitan University | entity', ...
@@ -268,7 +268,7 @@ First, you need to start the Virtuoso database.
 
 1. Index entity names using ElasticSearch.
 
-- Run `python tools/searchnode_metaqa.py`
+- Run `python tool/searchnode_metaqa.py`
 
 2. Cache vector representations of predicates and index them using ChromaDB.
 
@@ -276,7 +276,7 @@ First, you need to start the Virtuoso database.
 
 3. Check the tools
 
-- Run `python tools/actions_metaqa.py`. If everything goes smoothly, you should see the following output:
+- Run `python tool/actions_metaqa.py`. If everything goes smoothly, you should see the following output:
     ```
     Connected to MetaQA DB successfully.
     ['"ginger rogers" | A tag', '"Ginger Rogers" | ...

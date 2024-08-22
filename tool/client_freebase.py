@@ -415,7 +415,7 @@ def test():
 
 if __name__ == "__main__":
     """
-    python tools/client_freebase.py
+    python tool/client_freebase.py
     """
     test_filter()
     test()

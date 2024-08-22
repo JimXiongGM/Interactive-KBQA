@@ -1,7 +1,7 @@
 from evaluation.eval_all import evaluation_kqapro
 
 """
-PYTHONPATH=./ python scripts/eval_all_kqapro.py
+PYTHONPATH=./ python script/eval_all_kqapro.py
 
 The path of the prediction files follows a specific pattern, for example:
 ```
