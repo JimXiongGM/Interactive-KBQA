@@ -3,7 +3,7 @@ import pickle
 from loguru import logger
 
 from common.common_utils import save_to_pkl
-from tool.openai import get_embedding_batch
+from tool.openai_api import get_embedding_batch
 
 
 def cache_predicate_vectors_batch():

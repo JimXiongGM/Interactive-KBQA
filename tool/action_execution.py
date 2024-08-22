@@ -165,7 +165,7 @@ def chat_with_LLM(
     assert save_dir is not None, "save_dir must be provided."
 
     if model_name.startswith("gpt-"):
-        from tool.openai import chatgpt
+        from tool.openai_api import chatgpt
 
         _llm_func = chatgpt
         config = {

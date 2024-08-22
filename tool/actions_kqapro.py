@@ -2,7 +2,7 @@ from collections import namedtuple
 from typing import List
 
 from tool.client_wikidata_kqapro import WikidataKQAProClient
-from tool.openai import get_embedding
+from tool.openai_api import get_embedding
 from tool_prepare.wikidata_vectorization import SearchName, init_chroma_client
 
 subgraph = namedtuple("subgraph", ["p", "fact_triple", "type"])

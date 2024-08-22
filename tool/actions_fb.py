@@ -4,7 +4,7 @@ from typing import List
 from loguru import logger
 
 from tool.client_freebase import DATATYPE, TYPE, FreebaseClient, add_not_exists_or_exists_filter
-from tool.openai import get_embedding
+from tool.openai_api import get_embedding
 from tool.searchnode_fb import SearchMidName
 from tool_prepare.fb_vectorization import (
     CHROMA_CVT_PREDICATE_PAIR_NAME,

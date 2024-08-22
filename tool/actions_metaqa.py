@@ -2,7 +2,7 @@ from collections import namedtuple
 from typing import List
 
 from tool.client_metaqa import MetaQAClient
-from tool.openai import get_embedding
+from tool.openai_api import get_embedding
 from tool.searchnode_metaqa import SearchMidName
 from tool_prepare.metaqa import CHROMA_PREDICATE_NAME, get_chroma_client
 

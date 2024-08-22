@@ -4,7 +4,7 @@ from loguru import logger
 from tqdm import tqdm
 
 from common.common_utils import read_json, read_jsonl, save_to_pkl
-from tool.openai import get_embedding_batch
+from tool.openai_api import get_embedding_batch
 
 
 def cache_predicate_vectors_batch():

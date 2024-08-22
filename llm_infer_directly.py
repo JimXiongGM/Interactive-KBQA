@@ -9,7 +9,7 @@ import fire
 from loguru import logger
 
 from common.common_utils import multi_process, read_json, save_to_json
-from tool.openai import chatgpt
+from tool.openai_api import chatgpt
 
 """
 gpt-4-1106-preview Answer (8 shots)

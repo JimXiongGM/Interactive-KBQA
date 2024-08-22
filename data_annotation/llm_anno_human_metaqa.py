@@ -7,7 +7,7 @@ import fire
 from common.common_utils import colorful, read_json, save_to_json
 from common.constant import TOOL_DESC_FULL_METAQA
 from tool.action_execution import parse_action
-from tool.openai import chatgpt
+from tool.openai_api import chatgpt
 
 
 def _print_colorful(msg: dict):

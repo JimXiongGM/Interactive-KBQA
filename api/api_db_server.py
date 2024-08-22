@@ -7,7 +7,7 @@ import uvicorn
 from fastapi import FastAPI, Form
 
 from common.constant import API_SERVER_FB, API_SERVER_KQAPRO, API_SERVER_METAQA
-from tool.openai import get_embedding
+from tool.openai_api import get_embedding
 
 """
 kqapro
