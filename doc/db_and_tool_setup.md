@@ -300,17 +300,17 @@ You can run the following commands to test the tools.
 # Freebase
 curl -X POST "http://localhost:9901/fb/SearchNodes" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "query=The Secret Life of Leonardo Da Vinci&n_results=10"
+    -d "query=The Secret Life of Leonardo Da Vinci&n_results=10" \
     -w "\nTotal time: %{time_total}s\n"
 
 curl -X POST "http://localhost:9901/fb/SearchGraphPatterns" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "sparql=SELECT ?e WHERE { ?e ns:type.object.name \"Jerry Jones\"@en }&semantic=owned by&topN_return=10"
+    -d "sparql=SELECT ?e WHERE { ?e ns:type.object.name \"Jerry Jones\"@en }&semantic=owned by&topN_return=10" \
     -w "\nTotal time: %{time_total}s\n"
 
 curl -X POST "http://localhost:9901/fb/ExecuteSPARQL" \
     -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "sparql=SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name \"Tom Hanks\"@en . ?e0 ns:award.award_winner.awards_won ?cvt0 . ?cvt0 ns:award.award_honor.award ?x . }&str_mode=false"
+    -d "sparql=SELECT DISTINCT ?x WHERE { ?e0 ns:type.object.name \"Tom Hanks\"@en . ?e0 ns:award.award_winner.awards_won ?cvt0 . ?cvt0 ns:award.award_honor.award ?x . }&str_mode=false" \
     -w "\nTotal time: %{time_total}s\n"
 
 # Wikidata (KQA Pro)
