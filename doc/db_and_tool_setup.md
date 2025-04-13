@@ -232,7 +232,7 @@ First, you need to start the Virtuoso database.
 
 1. Preprocess entity names and predicates in Wikidata.
 
-- Run `python tool_prepare/kqapro_cache_e_and_p.py`, the following files will be generated (We have upload this file):
+- Run `python tool_prepare/wikidata_cache_entity.py` and `python tool_prepare/wikidata_cache_relation.py`, the following files will be generated (We have upload this file):
     - `database/wikidata-kqapro-info/node-name-desc.jsonl`
     - `database/wikidata-kqapro-info/kqapro_attributes_counter.json`
     - `database/wikidata-kqapro-info/kqapro_relations_counter.json`
@@ -240,7 +240,7 @@ First, you need to start the Virtuoso database.
 
 2. Cache vector representations of predicates and index them by ChromaDB.
 
-- Run `python tool_prepare/kqapro_vectorization.py`. If everything goes smoothly, you should see the following output:
+- Run `python tool_prepare/wikidata_vectorization.py`. If everything goes smoothly, you should see the following output:
     ```python
     [{'name': 'visual artwork', 'type': 'concept', 'distance': 0.17139165103435516}, ...
     ```
