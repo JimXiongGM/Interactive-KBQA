@@ -12,7 +12,10 @@ This repository contains the official code for ACL 2024 paper "Interactive-KBQA:
 This figure illustrates the overall process.
 
 <div align="center">
-  <img src="./img/overview.png" alt="overall process" width="50%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./img/overview-dark.png">
+    <img src="./img/overview.png" alt="overall process" width="50%">
+  </picture>
 </div>
 
 
